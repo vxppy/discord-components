@@ -15,23 +15,14 @@ git clone https://github.com/vxppy/discord-components.git .
 ## Quick Start
 
 ```ts
-import {
-    actionRow,
-    buttons,
-    ButtonStyle,
-    container,
-    text,
-} from '@vxppy/discord-components';
+import { actionRow, button, container, text } from '@vxppy/discord-components';
 
 const body = container(
     text('Say hi'),
-    actionRow(
-        buttons
-            .regular({
-                label: 'Hi!',
-                customId: 'say-hi',
-            })
-            .style(ButtonStyle.Success),
+    actionRow(button
+        .label('Hi!')
+        .customId('hello_world')
+        .success()
     ),
 );
 ```
