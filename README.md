@@ -7,7 +7,9 @@ Components are plain builder objects that can be nested and configured through a
 ## Installation
 
 ```sh
-npm install @vxppy/discord-components
+mkdir project_name
+cd project_name
+git clone https://github.com/vxppy/discord-components.git .
 ```
 
 ## Quick Start
@@ -19,19 +21,17 @@ import {
     ButtonStyle,
     container,
     text,
-} from "@vxppy/discord-components";
+} from '@vxppy/discord-components';
 
 const body = container(
-    text("Say hi"),
+    text('Say hi'),
     actionRow(
         buttons
             .regular({
-                label: "Hi!",
-                customId: "say-hi",
+                label: 'Hi!',
+                customId: 'say-hi',
             })
-            .style(ButtonStyle.Success)
-    )
+            .style(ButtonStyle.Success),
+    ),
 );
 ```
-
-## Reference
