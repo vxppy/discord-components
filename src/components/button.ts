@@ -1,0 +1,159 @@
+import {
+    BaseActionComponent,
+    type ActionComponentData,
+    type ActionComponentJSON,
+    type EmojiResolveable,
+    type PartialEmoji,
+} from '../base.js';
+import { ComponentType } from '../componentType.js';
+import requireField from '../utils/requireField.js';
+import resolveEmoji from '../utils/resolveEmoji.js';
+
+export enum ButtonStyle {
+    Primary = 1,
+    Secondary,
+    Success,
+    Danger,
+    Link,
+    Premium,
+}
+
+interface ButtonData extends ActionComponentData {
+    style?: ButtonStyle;
+    emoji?: PartialEmoji;
+    label?: string;
+    sku_id?: string;
+    url?: string;
+    disabled?: boolean;
+}
+
+interface ButtonPayload extends ActionComponentJSON {
+    style?: ButtonStyle;
+    emoji?: PartialEmoji;
+    label?: string;
+    sku_id?: string;
+    url?: string;
+    disabled?: boolean;
+}
+
+class ButtonComponent extends BaseActionComponent<
+    ComponentType.Button,
+    ButtonData,
+    ButtonPayload
+> {
+    constructor(data: ButtonData = {}) {
+        super(data);
+    }
+
+    /**
+     * Manually set the style of button. Not recommended for normal use
+     */
+    style(style: ButtonStyle) {
+        this.data.style = style;
+        return this;
+    }
+
+    primary() {
+        this.data.style = ButtonStyle.Primary;
+        return this;
+    }
+
+    secondary() {
+        this.data.style = ButtonStyle.Secondary;
+        return this;
+    }
+
+    success() {
+        this.data.style = ButtonStyle.Success;
+        return this;
+    }
+
+    danger() {
+        this.data.style = ButtonStyle.Danger;
+        return this;
+    }
+
+    link(url: string) {
+        this.data.style = ButtonStyle.Link;
+
+        this.data.url = url;
+        return this;
+    }
+
+    premium(skuId: string) {
+        this.data.style = ButtonStyle.Premium;
+
+        this.data.sku_id = skuId;
+        return this;
+    }
+
+    label(label: string) {
+        this.data.label = label;
+        return this;
+    }
+
+    emoji(emoji?: EmojiResolveable) {
+        this.data.emoji = resolveEmoji(emoji);
+        return this;
+    }
+
+    customId(id: string): this {
+        this.data.custom_id = id;
+        return this;
+    }
+
+    clone(): this {
+        return new ButtonComponent({ ...this.data }) as this;
+    }
+
+    toJSON(): ButtonPayload {
+        switch (this.data.style) {
+            case ButtonStyle.Primary:
+            case ButtonStyle.Secondary:
+            case ButtonStyle.Success:
+            case ButtonStyle.Danger: {
+                requireField(this.data.custom_id, 'custom_id', {
+                    builder: 'button',
+                    id: this.data.id,
+                    custom_id: this.data.custom_id,
+                });
+
+                if (!this.data.emoji && !this.data.label) {
+                    requireField(undefined, 'emoji | label', {
+                        builder: 'button',
+                        id: this.data.id,
+                        custom_id: this.data.custom_id,
+                    });
+                }
+                break;
+            }
+            case ButtonStyle.Link: {
+                requireField(this.data.url, 'url', {
+                    builder: 'button',
+                    id: this.data.id,
+                    custom_id: this.data.custom_id,
+                });
+                break;
+            }
+            case ButtonStyle.Premium: {
+                requireField(this.data.sku_id, 'sku_id', {
+                    builder: 'button',
+                    id: this.data.id,
+                    custom_id: this.data.custom_id,
+                });
+                break;
+            }
+        }
+
+        return {
+            type: ComponentType.Button,
+            ...this.data,
+        };
+    }
+}
+
+export function button() {
+    return new ButtonComponent();
+}
+
+export type { ButtonComponent };

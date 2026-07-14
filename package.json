@@ -1,0 +1,25 @@
+{
+    "name": "@vxppy/discord-components",
+    "version": "1.0.0",
+    "description": "A simple builder library for discord components v2",
+    "license": "ISC",
+    "author": "vxppy",
+    "type": "module",
+    "scripts": {
+        "build": "tsc"
+    },
+    "types": "./build/index.d.ts",
+    "exports": {
+        ".": {
+            "default": "./build/index.js",
+            "types": "./build/index.d.ts"
+        }
+    },
+    "files": [
+        "build",
+        "LICENSE"
+    ],
+    "devDependencies": {
+        "typescript": "^7.0.2"
+    }
+}
