@@ -1,6 +1,6 @@
 {
     "name": "@vxppy/discord-components",
-    "version": "0.0.8",
+    "version": "0.0.9",
     "description": "A simple builder library for discord components v2",
     "license": "ISC",
     "author": "vxppy",
