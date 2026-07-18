@@ -1,6 +1,6 @@
 # @vxppy/discord-components
 
-[![npm version](https://img.shields.io/npm/v/@vxppy/discord-components)](https://www.npmjs.com/package/discord-components)
+[![npm version](https://img.shields.io/npm/v/@vxppy/discord-components)](https://www.npmjs.com/package/@vxppy/discord-components)
 [![GitHub stars](https://img.shields.io/github/stars/vxppy/discord-components?style=social)](https://github.com/vxppy/discord-components/stargazers)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
