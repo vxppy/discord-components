@@ -2,7 +2,7 @@ import BuildValidationError from '../error.js';
 
 interface RequireFieldInfo {
     builder: string;
-    id?: string;
+    id?: number;
     custom_id?: string;
 }
 

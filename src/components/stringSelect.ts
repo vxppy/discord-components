@@ -1,15 +1,15 @@
 import {
     BaseActionComponent,
-    type ActionComponentData,
-    type ActionComponentJSON,
+    type BaseActionComponentData,
     type PartialEmoji,
-} from '../base.js';
-import { ComponentType } from '../componentType.js';
+} from './base.js';
 import BuildValidationError from '../error.js';
 import type { FlattenableArray } from '../utils/normalize.js';
 import normalize from '../utils/normalize.js';
 import requireField from '../utils/requireField.js';
 import resolveEmoji from '../utils/resolveEmoji.js';
+import type { APIStringSelectComponent } from 'discord-api-types/v10';
+import { ComponentType } from 'discord-api-types/v9';
 
 interface SelectOptionData {
     label: string;
@@ -63,16 +63,8 @@ export function option(data: SelectOptionData) {
     return new SelectOption(data);
 }
 
-interface StringSelectData extends ActionComponentData {
+interface StringSelectData extends BaseActionComponentData {
     options: SelectOption[];
-    placeholder?: string;
-    min_values?: number;
-    max_values?: number;
-    disabled?: boolean;
-}
-
-interface StringOptionPayload extends ActionComponentJSON {
-    options: SelectOptionData[];
     placeholder?: string;
     min_values?: number;
     max_values?: number;
@@ -87,7 +79,7 @@ const normalizeOptions = (x: FlattenableArray<StringSelectOption>) =>
 class StringSelectComponent extends BaseActionComponent<
     ComponentType.StringSelect,
     StringSelectData,
-    StringOptionPayload
+    APIStringSelectComponent
 > {
     constructor(data: StringSelectData) {
         super(data);
@@ -136,7 +128,7 @@ class StringSelectComponent extends BaseActionComponent<
         }) as this;
     }
 
-    toJSON(): StringOptionPayload {
+    toJSON(): APIStringSelectComponent {
         requireField(this.data.custom_id, 'custom_id', {
             builder: 'stringSelect',
             id: this.data.id,
@@ -193,6 +185,7 @@ class StringSelectComponent extends BaseActionComponent<
         return {
             type: ComponentType.StringSelect,
             ...this.data,
+            custom_id: this.data.custom_id!,
             options,
         };
     }

@@ -1,23 +1,18 @@
 import {
     BaseActionComponent,
-    type ActionComponentData,
-    type ActionComponentJSON,
-    type Mentionable,
-} from '../base.js';
-import { ComponentType } from '../componentType.js';
+    MentionableValue,
+    type BaseActionComponentData,
+} from './base.js';
+
 import BuildValidationError from '../error.js';
 import requireField from '../utils/requireField.js';
+import {
+    ComponentType,
+    type APIUserSelectComponent,
+} from 'discord-api-types/v10';
 
-interface UserSelectData extends ActionComponentData {
+interface UserSelectData extends BaseActionComponentData {
     default_values?: string[];
-    placeholder?: string;
-    min_values?: number;
-    max_values?: number;
-    disabled?: boolean;
-}
-
-interface UserSelectPayload extends ActionComponentJSON {
-    default_values?: Mentionable<'user'>[];
     placeholder?: string;
     min_values?: number;
     max_values?: number;
@@ -27,7 +22,7 @@ interface UserSelectPayload extends ActionComponentJSON {
 class UserSelectComponent extends BaseActionComponent<
     ComponentType.UserSelect,
     UserSelectData,
-    UserSelectPayload
+    APIUserSelectComponent
 > {
     constructor(data: UserSelectData = {}) {
         super(data);
@@ -73,7 +68,7 @@ class UserSelectComponent extends BaseActionComponent<
         return new UserSelectComponent({ ...this.data }) as this;
     }
 
-    toJSON(): UserSelectPayload {
+    toJSON(): APIUserSelectComponent {
         requireField(this.data.custom_id, 'custom_id', {
             builder: 'userSelect',
             id: this.data.id,
@@ -101,8 +96,12 @@ class UserSelectComponent extends BaseActionComponent<
         return {
             type: ComponentType.UserSelect,
             ...this.data,
+            custom_id: this.data.custom_id!,
             default_values: this.data.default_values
-                ? this.data.default_values.map((x) => ({ type: 'user', id: x }))
+                ? this.data.default_values.map((x) => ({
+                      type: MentionableValue.User,
+                      id: x,
+                  }))
                 : undefined,
         };
     }

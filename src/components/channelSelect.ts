@@ -1,23 +1,17 @@
 import {
     BaseActionComponent,
-    type ActionComponentData,
-    type ActionComponentJSON,
-    type Mentionable,
-} from '../base.js';
-import { ComponentType } from '../componentType.js';
+    MentionableValue,
+    type BaseActionComponentData,
+} from './base.js';
 import BuildValidationError from '../error.js';
 import requireField from '../utils/requireField.js';
+import {
+    ComponentType,
+    type APIChannelSelectComponent,
+} from 'discord-api-types/v10';
 
-interface ChannelSelectData extends ActionComponentData {
+interface ChannelSelectData extends BaseActionComponentData {
     default_values?: string[];
-    placeholder?: string;
-    min_values?: number;
-    max_values?: number;
-    disabled?: boolean;
-}
-
-interface ChannelSelectPayload extends ActionComponentJSON {
-    default_values?: Mentionable<'channel'>[];
     placeholder?: string;
     min_values?: number;
     max_values?: number;
@@ -27,7 +21,7 @@ interface ChannelSelectPayload extends ActionComponentJSON {
 class ChannelSelectComponent extends BaseActionComponent<
     ComponentType.ChannelSelect,
     ChannelSelectData,
-    ChannelSelectPayload
+    APIChannelSelectComponent
 > {
     constructor(data: ChannelSelectData = {}) {
         super(data);
@@ -73,7 +67,7 @@ class ChannelSelectComponent extends BaseActionComponent<
         return new ChannelSelectComponent({ ...this.data }) as this;
     }
 
-    toJSON(): ChannelSelectPayload {
+    toJSON(): APIChannelSelectComponent {
         requireField(this.data.custom_id, 'custom_id', {
             builder: 'channelSelect',
             id: this.data.id,
@@ -103,10 +97,11 @@ class ChannelSelectComponent extends BaseActionComponent<
             ...this.data,
             default_values: this.data.default_values
                 ? this.data.default_values.map((x) => ({
-                      type: 'channel',
+                      type: MentionableValue.Channel,
                       id: x,
                   }))
                 : undefined,
+            custom_id: this.data.custom_id!,
         };
     }
 }

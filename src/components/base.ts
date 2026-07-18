@@ -1,4 +1,9 @@
-import type { ComponentType } from './componentType.js';
+// import type { ComponentType } from './componentType.js';
+
+import {
+    SelectMenuDefaultValueType,
+    type ComponentType,
+} from 'discord-api-types/v10';
 
 export interface PartialEmoji {
     id?: string;
@@ -9,31 +14,19 @@ export interface PartialEmoji {
 export type EmojiResolveable = string | PartialEmoji;
 
 export interface BaseComponentData {
-    id?: string;
+    id?: number;
 }
 
-export interface ComponentJSON {
-    type: number;
-    id?: string;
-}
-
-export interface ActionComponentData extends BaseComponentData {
+export interface BaseActionComponentData extends BaseComponentData {
     custom_id?: string;
     disabled?: boolean;
-}
-
-export interface ActionComponentJSON extends ComponentJSON {
-    custom_id?: string;
-    disabled?: boolean;
-}
-
-export interface UnfurledMediaItemPayload {
-    url: string;
 }
 
 export type ColorResolable = string | number;
 
-export type Mentionable<T extends string = 'channel' | 'role' | 'user'> = {
+export { SelectMenuDefaultValueType as MentionableValue };
+
+export type Mentionable<T extends SelectMenuDefaultValueType> = {
     type: T;
     id: string;
 };
@@ -41,7 +34,7 @@ export type Mentionable<T extends string = 'channel' | 'role' | 'user'> = {
 export abstract class BaseComponent<
     TType extends ComponentType,
     TData extends BaseComponentData,
-    TPayload extends ComponentJSON,
+    TPayload,
 > {
     declare private readonly _T: TType;
 
@@ -50,9 +43,8 @@ export abstract class BaseComponent<
     abstract clone(): this;
     abstract toJSON(): TPayload;
 
-    id(id: string) {
+    id(id: number) {
         this.data.id = id;
-        return this;
     }
 
     toString() {
@@ -62,8 +54,8 @@ export abstract class BaseComponent<
 
 export abstract class BaseActionComponent<
     TType extends ComponentType,
-    TData extends ActionComponentData,
-    TPayload extends ComponentJSON,
+    TData extends BaseActionComponentData,
+    TPayload,
 > extends BaseComponent<TType, TData, TPayload> {
     constructor(payload: TData) {
         super(payload);

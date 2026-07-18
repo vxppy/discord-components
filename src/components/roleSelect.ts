@@ -1,23 +1,17 @@
 import {
     BaseActionComponent,
-    type ActionComponentData,
-    type ActionComponentJSON,
-    type Mentionable,
-} from '../base.js';
-import { ComponentType } from '../componentType.js';
+    MentionableValue,
+    type BaseActionComponentData,
+} from './base.js';
 import BuildValidationError from '../error.js';
 import requireField from '../utils/requireField.js';
+import {
+    ComponentType,
+    type APIRoleSelectComponent,
+} from 'discord-api-types/v10';
 
-interface RoleSelectData extends ActionComponentData {
+interface RoleSelectData extends BaseActionComponentData {
     default_values?: string[];
-    placeholder?: string;
-    min_values?: number;
-    max_values?: number;
-    disabled?: boolean;
-}
-
-interface RoleSelectPayload extends ActionComponentJSON {
-    default_values?: Mentionable<'role'>[];
     placeholder?: string;
     min_values?: number;
     max_values?: number;
@@ -27,7 +21,7 @@ interface RoleSelectPayload extends ActionComponentJSON {
 class RoleSelectComponent extends BaseActionComponent<
     ComponentType.RoleSelect,
     RoleSelectData,
-    RoleSelectPayload
+    APIRoleSelectComponent
 > {
     constructor(data: RoleSelectData = {}) {
         super(data);
@@ -73,7 +67,7 @@ class RoleSelectComponent extends BaseActionComponent<
         return new RoleSelectComponent({ ...this.data }) as this;
     }
 
-    toJSON(): RoleSelectPayload {
+    toJSON(): APIRoleSelectComponent {
         requireField(this.data.custom_id, 'custom_id', {
             builder: 'roleSelect',
             id: this.data.id,
@@ -102,8 +96,12 @@ class RoleSelectComponent extends BaseActionComponent<
             type: ComponentType.RoleSelect,
             ...this.data,
             default_values: this.data.default_values
-                ? this.data.default_values.map((x) => ({ type: 'role', id: x }))
+                ? this.data.default_values.map((x) => ({
+                      type: MentionableValue.Role,
+                      id: x,
+                  }))
                 : undefined,
+            custom_id: this.data.custom_id!,
         };
     }
 }

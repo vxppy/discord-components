@@ -1,16 +1,17 @@
-import {
-    BaseComponent,
-    type BaseComponentData,
-    type ComponentJSON,
-} from '../base.js';
-import { ComponentType } from '../componentType.js';
+import { BaseComponent, type BaseComponentData } from './base.js';
 import BuildValidationError from '../error.js';
 import type { FlattenableArray } from '../utils/normalize.js';
 import normalize from '../utils/normalize.js';
 import requireField from '../utils/requireField.js';
 import type { ButtonComponent } from './button.js';
-import type { TextDisplayComponent } from './text.js';
+import type { TextDisplayComponent } from './textDisplay.js';
 import type { ThumbnailComponent } from './thumbnail.js';
+import type {
+    APISectionAccessoryComponent,
+    APISectionComponent,
+    APITextDisplayComponent,
+} from 'discord-api-types/v10';
+import { ComponentType } from 'discord-api-types/v9';
 
 type SectionAccessory = ButtonComponent | ThumbnailComponent;
 type SectionChild = TextDisplayComponent;
@@ -20,15 +21,10 @@ interface SectionData extends BaseComponentData {
     components: SectionChild[];
 }
 
-interface SectionPayload extends ComponentJSON {
-    accessory: ComponentJSON;
-    components: ComponentJSON[];
-}
-
 class SectionComponent extends BaseComponent<
     ComponentType.Section,
     SectionData,
-    SectionPayload
+    APISectionComponent
 > {
     constructor(data: SectionData) {
         super(data);
@@ -41,10 +37,12 @@ class SectionComponent extends BaseComponent<
 
     items(...components: FlattenableArray<SectionChild>) {
         this.data.components = normalize(components);
+        return this;
     }
 
     append(...components: FlattenableArray<SectionChild>) {
         this.data.components.push(...normalize(components));
+        return this;
     }
 
     clone(): this {
@@ -55,13 +53,13 @@ class SectionComponent extends BaseComponent<
         }) as this;
     }
 
-    toJSON(): SectionPayload {
+    toJSON(): APISectionComponent {
         requireField(this.data.accessory, 'accessory', {
             builder: 'section',
             id: this.data.id,
         });
 
-        let accessory: ComponentJSON;
+        let accessory: APISectionAccessoryComponent;
 
         try {
             accessory = this.data.accessory.toJSON();
@@ -84,7 +82,7 @@ class SectionComponent extends BaseComponent<
             ]);
         }
 
-        const components: ComponentJSON[] = new Array(
+        const components: APITextDisplayComponent[] = new Array(
             this.data.components.length,
         );
 

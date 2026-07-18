@@ -2,9 +2,7 @@ import {
     BaseComponent,
     type BaseComponentData,
     type ColorResolable,
-    type ComponentJSON,
-} from '../base.js';
-import { ComponentType } from '../componentType.js';
+} from './base.js';
 import BuildValidationError from '../error.js';
 import type { FlattenableArray } from '../utils/normalize.js';
 import normalize from '../utils/normalize.js';
@@ -14,7 +12,12 @@ import type { FileComponent } from './file.js';
 import type { MediaGalleryComponent } from './mediaGallery.js';
 import type { SectionComponent } from './section.js';
 import type { SeparatorComponent } from './separator.js';
-import type { TextDisplayComponent } from './text.js';
+import type { TextDisplayComponent } from './textDisplay.js';
+import {
+    ComponentType,
+    type APIComponentInContainer,
+    type APIContainerComponent,
+} from 'discord-api-types/v10';
 
 type ContainerChild =
     | ActionRowComponent
@@ -28,6 +31,7 @@ const ContainerValidTypes = [
     ComponentType.ActionRow,
     ComponentType.Section,
     ComponentType.TextDisplay,
+    ComponentType.Separator,
     ComponentType.MediaGallery,
     ComponentType.File,
 ];
@@ -38,16 +42,10 @@ interface ContainerData extends BaseComponentData {
     components: ContainerChild[];
 }
 
-interface ContainerPayload extends ComponentJSON {
-    components: ComponentJSON[];
-    accent_color?: number;
-    spoiler?: boolean;
-}
-
 class ContainerComponent extends BaseComponent<
-    ComponentType.Section,
+    ComponentType.Container,
     ContainerData,
-    ContainerPayload
+    APIContainerComponent
 > {
     constructor(data: ContainerData) {
         super(data);
@@ -68,10 +66,12 @@ class ContainerComponent extends BaseComponent<
 
     items(...components: FlattenableArray<ContainerChild>) {
         this.data.components = normalize(components);
+        return this;
     }
 
     append(...components: FlattenableArray<ContainerChild>) {
         this.data.components.push(...normalize(components));
+        return this;
     }
 
     clone(): this {
@@ -81,7 +81,7 @@ class ContainerComponent extends BaseComponent<
         }) as this;
     }
 
-    toJSON(): ContainerPayload {
+    toJSON(): APIContainerComponent {
         if (!this.data.components.length) {
             throw new BuildValidationError(
                 'Container must contain at least one component',
@@ -89,7 +89,7 @@ class ContainerComponent extends BaseComponent<
             );
         }
 
-        const components: ComponentJSON[] = new Array(
+        const components: APIComponentInContainer[] = new Array(
             this.data.components.length,
         );
 
@@ -116,7 +116,8 @@ class ContainerComponent extends BaseComponent<
         }
 
         return {
-            type: ComponentType.Section,
+            type: ComponentType.Container,
+            ...this.data,
             components: components,
         };
     }

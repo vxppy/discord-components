@@ -1,33 +1,19 @@
 import {
     BaseActionComponent,
-    type ActionComponentData,
-    type ActionComponentJSON,
+    type BaseActionComponentData,
     type EmojiResolveable,
     type PartialEmoji,
-} from '../base.js';
-import { ComponentType } from '../componentType.js';
+} from './base.js';
 import requireField from '../utils/requireField.js';
 import resolveEmoji from '../utils/resolveEmoji.js';
 
-export enum ButtonStyle {
-    Primary = 1,
-    Secondary,
-    Success,
-    Danger,
-    Link,
-    Premium,
-}
+import {
+    ButtonStyle,
+    ComponentType,
+    type APIButtonComponent,
+} from 'discord-api-types/v10';
 
-interface ButtonData extends ActionComponentData {
-    style?: ButtonStyle;
-    emoji?: PartialEmoji;
-    label?: string;
-    sku_id?: string;
-    url?: string;
-    disabled?: boolean;
-}
-
-interface ButtonPayload extends ActionComponentJSON {
+interface ButtonData extends BaseActionComponentData {
     style?: ButtonStyle;
     emoji?: PartialEmoji;
     label?: string;
@@ -39,7 +25,7 @@ interface ButtonPayload extends ActionComponentJSON {
 class ButtonComponent extends BaseActionComponent<
     ComponentType.Button,
     ButtonData,
-    ButtonPayload
+    APIButtonComponent
 > {
     constructor(data: ButtonData = {}) {
         super(data);
@@ -106,7 +92,7 @@ class ButtonComponent extends BaseActionComponent<
         return new ButtonComponent({ ...this.data }) as this;
     }
 
-    toJSON(): ButtonPayload {
+    toJSON(): APIButtonComponent {
         switch (this.data.style) {
             case ButtonStyle.Primary:
             case ButtonStyle.Secondary:
@@ -148,7 +134,8 @@ class ButtonComponent extends BaseActionComponent<
         return {
             type: ComponentType.Button,
             ...this.data,
-        };
+            custom_id: this.data.custom_id!,
+        } as APIButtonComponent;
     }
 }
 

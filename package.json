@@ -37,6 +37,10 @@
         "LICENSE"
     ],
     "devDependencies": {
+        "discord.js": "^14.27.0",
         "typescript": "^7.0.2"
+    },
+    "dependencies": {
+        "discord-api-types": "^0.38.50"
     }
 }

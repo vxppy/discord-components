@@ -1,10 +1,10 @@
-export * from './componentType.js';
+export { ComponentType, ButtonStyle } from 'discord-api-types/v10';
 
 export * from './components/container.js';
 export * from './components/file.js';
 export * from './components/mediaGallery.js';
 export * from './components/section.js';
-export * from './components/text.js';
+export * from './components/textDisplay.js';
 export * from './components/thumbnail.js';
 
 export * from './components/separator.js';

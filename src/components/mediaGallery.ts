@@ -1,23 +1,16 @@
-import {
-    BaseComponent,
-    type BaseComponentData,
-    type ComponentJSON,
-    type UnfurledMediaItemPayload,
-} from '../base.js';
-import { ComponentType } from '../componentType.js';
+import { BaseComponent, type BaseComponentData } from './base.js';
 import BuildValidationError from '../error.js';
 import type { FlattenableArray } from '../utils/normalize.js';
 import normalize from '../utils/normalize.js';
 import requireField from '../utils/requireField.js';
+import {
+    ComponentType,
+    type APIMediaGalleryComponent,
+    type APIMediaGalleryItem,
+} from 'discord-api-types/v10';
 
 interface GalleryItemData {
     url: string;
-    description?: string;
-    spoiler?: boolean;
-}
-
-interface GalleryItemPayload {
-    media: UnfurledMediaItemPayload;
     description?: string;
     spoiler?: boolean;
 }
@@ -39,7 +32,7 @@ class MediaGalleryComponentItem {
         return new MediaGalleryComponentItem({ ...this.data });
     }
 
-    toJSON(): GalleryItemPayload {
+    toJSON(): APIMediaGalleryItem {
         requireField(this.data.url, 'media.url', {
             builder: 'galleryItem',
         });
@@ -58,14 +51,10 @@ interface MediaGalleryData extends BaseComponentData {
     items: MediaGalleryComponentItem[];
 }
 
-interface MediaGalleryPayload extends ComponentJSON {
-    items: GalleryItemPayload[];
-}
-
 class MediaGalleryComponent extends BaseComponent<
     ComponentType.MediaGallery,
     MediaGalleryData,
-    MediaGalleryPayload
+    APIMediaGalleryComponent
 > {
     constructor(data: MediaGalleryData) {
         super(data);
@@ -73,10 +62,12 @@ class MediaGalleryComponent extends BaseComponent<
 
     items(...components: FlattenableArray<MediaGalleryComponentItem>) {
         this.data.items = normalize(components);
+        return this;
     }
 
     append(...components: FlattenableArray<MediaGalleryComponentItem>) {
         this.data.items.push(...normalize(components));
+        return this;
     }
 
     clone(): this {
@@ -86,7 +77,7 @@ class MediaGalleryComponent extends BaseComponent<
         }) as this;
     }
 
-    toJSON(): MediaGalleryPayload {
+    toJSON(): APIMediaGalleryComponent {
         if (!this.data.items.length) {
             throw new BuildValidationError(
                 'MediaGallery must contain at least one item',
@@ -94,7 +85,7 @@ class MediaGalleryComponent extends BaseComponent<
             );
         }
 
-        const items: GalleryItemPayload[] = new Array(this.data.items.length);
+        const items: APIMediaGalleryItem[] = new Array(this.data.items.length);
 
         for (let i = 0; i < items.length; i++) {
             try {

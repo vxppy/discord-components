@@ -1,24 +1,18 @@
 import {
-    BaseComponent,
-    type BaseComponentData,
-    type ComponentJSON,
-} from '../base.js';
-import { ComponentType } from '../componentType.js';
+    ComponentType,
+    type APISeparatorComponent,
+} from 'discord-api-types/v10';
+import { BaseComponent, type BaseComponentData } from './base.js';
 
 interface SeparatorData extends BaseComponentData {
     divider: boolean;
     spacing: 1 | 2;
 }
 
-interface SeparatorPayload extends ComponentJSON {
-    divider?: boolean;
-    spacing?: 1 | 2;
-}
-
 class SeparatorComponent extends BaseComponent<
     ComponentType.Separator,
     SeparatorData,
-    SeparatorPayload
+    APISeparatorComponent
 > {
     static cache: SeparatorComponent[] = [
         new SeparatorComponent({ divider: true, spacing: 1 }),
@@ -28,7 +22,7 @@ class SeparatorComponent extends BaseComponent<
         super(data);
     }
 
-    id(id: string) {
+    id(id: number) {
         return new SeparatorComponent({ ...this.data, id }) as this;
     }
 
@@ -53,7 +47,7 @@ class SeparatorComponent extends BaseComponent<
         return this;
     }
 
-    toJSON(): SeparatorPayload {
+    toJSON(): APISeparatorComponent {
         return {
             type: ComponentType.Separator,
             ...this.data,

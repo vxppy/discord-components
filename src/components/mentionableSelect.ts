@@ -1,23 +1,20 @@
 import {
     BaseActionComponent,
-    type ActionComponentData,
-    type ActionComponentJSON,
+    MentionableValue,
+    type BaseActionComponentData,
     type Mentionable,
-} from '../base.js';
-import { ComponentType } from '../componentType.js';
+} from './base.js';
 import BuildValidationError from '../error.js';
 import requireField from '../utils/requireField.js';
+import {
+    ComponentType,
+    type APIMentionableSelectComponent,
+} from 'discord-api-types/v10';
 
-interface MentionableSelectData extends ActionComponentData {
-    default_values?: Mentionable[];
-    placeholder?: string;
-    min_values?: number;
-    max_values?: number;
-    disabled?: boolean;
-}
-
-interface MentionableSelectPayload extends ActionComponentJSON {
-    default_values?: Mentionable[];
+interface MentionableSelectData extends BaseActionComponentData {
+    default_values?: Mentionable<
+        MentionableValue.Role | MentionableValue.User
+    >[];
     placeholder?: string;
     min_values?: number;
     max_values?: number;
@@ -27,7 +24,7 @@ interface MentionableSelectPayload extends ActionComponentJSON {
 class MentionableSelectComponent extends BaseActionComponent<
     ComponentType.MentionableSelect,
     MentionableSelectData,
-    MentionableSelectPayload
+    APIMentionableSelectComponent
 > {
     constructor(data: MentionableSelectData = {}) {
         super(data);
@@ -64,7 +61,9 @@ class MentionableSelectComponent extends BaseActionComponent<
         return this;
     }
 
-    defaultValues(...values: Mentionable[]) {
+    defaultValues(
+        ...values: Mentionable<MentionableValue.Role | MentionableValue.User>[]
+    ) {
         this.data.default_values = values;
         return this;
     }
@@ -73,7 +72,7 @@ class MentionableSelectComponent extends BaseActionComponent<
         return new MentionableSelectComponent({ ...this.data }) as this;
     }
 
-    toJSON(): MentionableSelectPayload {
+    toJSON(): APIMentionableSelectComponent {
         requireField(this.data.custom_id, 'custom_id', {
             builder: 'mentionableSelect',
             id: this.data.id,
@@ -104,6 +103,7 @@ class MentionableSelectComponent extends BaseActionComponent<
             default_values: this.data.default_values
                 ? this.data.default_values
                 : undefined,
+            custom_id: this.data.custom_id!,
         };
     }
 }

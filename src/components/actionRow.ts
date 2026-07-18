@@ -1,18 +1,21 @@
-import {
-    BaseComponent,
-    type BaseComponentData,
-    type ComponentJSON,
-} from '../base.js';
-import { ComponentType } from '../componentType.js';
+import { BaseComponent, type BaseComponentData } from './base.js';
 import BuildValidationError from '../error.js';
+
 import type { FlattenableArray } from '../utils/normalize.js';
 import normalize from '../utils/normalize.js';
+
 import type { ButtonComponent } from './button.js';
 import type { ChannelSelectComponent } from './channelSelect.js';
 import type { MentionableSelectComponent } from './mentionableSelect.js';
 import type { RoleSelectComponent } from './roleSelect.js';
 import type { StringSelectComponent } from './stringSelect.js';
 import type { UserSelectComponent } from './userSelect.js';
+
+import {
+    ComponentType,
+    type APIActionRowComponent,
+} from 'discord-api-types/v10';
+import type { APIComponentInMessageActionRow } from 'discord-api-types/v9';
 
 type ActionRowChild =
     | ButtonComponent
@@ -35,14 +38,12 @@ interface ActionRowData extends BaseComponentData {
     components: ActionRowChild[];
 }
 
-interface ActionRowPayload extends ComponentJSON {
-    components: ComponentJSON[];
-}
+// type ActionRowValidTypesType = (typeof ActionRowValidTypes)[number];
 
 class ActionRowComponent extends BaseComponent<
     ComponentType.ActionRow,
     ActionRowData,
-    ActionRowPayload
+    APIActionRowComponent<APIComponentInMessageActionRow>
 > {
     constructor(data: ActionRowData) {
         super(data);
@@ -60,7 +61,7 @@ class ActionRowComponent extends BaseComponent<
         return new ActionRowComponent({ ...this.data }) as this;
     }
 
-    toJSON(): ActionRowPayload {
+    toJSON(): APIActionRowComponent<APIComponentInMessageActionRow> {
         if (!this.data.components.length) {
             throw new BuildValidationError(
                 'ActionRow must contain at least one component',
@@ -68,7 +69,7 @@ class ActionRowComponent extends BaseComponent<
             );
         }
 
-        const components: ComponentJSON[] = new Array(
+        const components: APIComponentInMessageActionRow[] = new Array(
             this.data.components.length,
         );
 

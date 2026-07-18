@@ -1,11 +1,11 @@
-import {
-    BaseComponent,
-    type BaseComponentData,
-    type ComponentJSON,
-    type UnfurledMediaItemPayload,
-} from '../base.js';
-import { ComponentType } from '../componentType.js';
+import { BaseComponent, type BaseComponentData } from './base.js';
+
 import requireField from '../utils/requireField.js';
+
+import {
+    ComponentType,
+    type APIThumbnailComponent,
+} from 'discord-api-types/v10';
 
 interface ThumbnailData extends BaseComponentData {
     url: string;
@@ -13,16 +13,10 @@ interface ThumbnailData extends BaseComponentData {
     spoiler?: boolean;
 }
 
-interface ThumbnailPayload extends ComponentJSON {
-    media: UnfurledMediaItemPayload;
-    description?: string;
-    spoiler?: boolean;
-}
-
 class ThumbnailComponent extends BaseComponent<
     ComponentType.Thumbnail,
     ThumbnailData,
-    ThumbnailPayload
+    APIThumbnailComponent
 > {
     constructor(data: ThumbnailData) {
         super(data);
@@ -42,7 +36,7 @@ class ThumbnailComponent extends BaseComponent<
         return new ThumbnailComponent({ ...this.data }) as this;
     }
 
-    toJSON(): ThumbnailPayload {
+    toJSON(): APIThumbnailComponent {
         requireField(this.data.url, 'media.url', {
             builder: 'thumbnail',
         });

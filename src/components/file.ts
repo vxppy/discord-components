@@ -1,18 +1,9 @@
-import {
-    BaseComponent,
-    type BaseComponentData,
-    type ComponentJSON,
-} from '../base.js';
-import type { ComponentType } from '../componentType.js';
+import { BaseComponent, type BaseComponentData } from './base.js';
 import requireField from '../utils/requireField.js';
+import type { APIFileComponent } from 'discord-api-types/v10';
+import { ComponentType } from 'discord-api-types/v9';
 
 interface FileData extends BaseComponentData {
-    file: string;
-    name?: string;
-    spoiler?: boolean;
-}
-
-interface FilePayload extends ComponentJSON {
     file: string;
     name?: string;
     spoiler?: boolean;
@@ -21,7 +12,7 @@ interface FilePayload extends ComponentJSON {
 class FileComponent extends BaseComponent<
     ComponentType.File,
     FileData,
-    FilePayload
+    APIFileComponent
 > {
     constructor(data: FileData) {
         super(data);
@@ -41,15 +32,19 @@ class FileComponent extends BaseComponent<
         return this;
     }
 
-    toJSON(): FilePayload {
+    toJSON(): APIFileComponent {
         requireField(this.data.file, 'file', {
             builder: 'file',
             id: this.data.id,
         });
 
         return {
-            type: 0,
-            ...this.data,
+            type: ComponentType.File,
+            name: this.data.name,
+            spoiler: this.data.spoiler,
+            file: {
+                url: this.data.file,
+            },
         };
     }
 }

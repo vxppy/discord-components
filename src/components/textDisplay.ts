@@ -1,11 +1,8 @@
-import {
-    BaseComponent,
-    type BaseComponentData,
-    type ComponentJSON,
-} from '../base.js';
-import { ComponentType } from '../componentType.js';
+import { BaseComponent, type BaseComponentData } from './base.js';
 import type { FlattenableArray } from '../utils/normalize.js';
 import normalize from '../utils/normalize.js';
+import type { APITextDisplayComponent } from 'discord-api-types/v10';
+import { ComponentType } from 'discord-api-types/v9';
 
 const RichTextFormat = {
     Bold: 1 << 0,
@@ -213,15 +210,11 @@ class TextNode implements TextFormat {
     }
 }
 
-interface TextDisplayPayload extends ComponentJSON {
-    content: string;
-}
-
 class TextDisplayComponent
     extends BaseComponent<
         ComponentType.TextDisplay,
         BaseComponentData,
-        TextDisplayPayload
+        APITextDisplayComponent
     >
     implements TextFormat
 {
@@ -324,7 +317,7 @@ class TextDisplayComponent
         return rfToContent({ content, ...this.rf });
     }
 
-    toJSON(): TextDisplayPayload {
+    toJSON(): APITextDisplayComponent {
         const content = this.serializeContent();
 
         return {

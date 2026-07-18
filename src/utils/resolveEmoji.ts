@@ -1,4 +1,4 @@
-import type { PartialEmoji } from '../base.js';
+import type { PartialEmoji } from '../components/base.js';
 
 export default function resolveEmoji(
     emoji?: string | PartialEmoji,
