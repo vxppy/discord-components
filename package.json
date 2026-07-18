@@ -1,6 +1,6 @@
 {
     "name": "@vxppy/discord-components",
-    "version": "0.0.5",
+    "version": "0.0.6",
     "description": "A simple builder library for discord components v2",
     "license": "ISC",
     "author": "vxppy",
@@ -14,6 +14,23 @@
             "default": "./build/index.js",
             "types": "./build/index.d.ts"
         }
+    },
+    "keywords": [
+        "discord",
+        "discordjs",
+        "discord.js",
+        "discord-components",
+        "components-v2",
+        "builder",
+        "typescript"
+    ],
+    "homepage": "https://github.com/vxppy/discord-components",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/vxppy/discord-components.git"
+    },
+    "bugs": {
+        "url": "https://github.com/vxppy/discord-components/issues"
     },
     "files": [
         "build",
