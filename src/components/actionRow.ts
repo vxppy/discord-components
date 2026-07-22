@@ -73,7 +73,7 @@ class ActionRowComponent extends BaseComponent<
             this.data.components.length,
         );
 
-        let hasButtons: boolean | undefined = false;
+        let hasButtons: boolean | undefined;
         for (let i = 0; i < components.length; i++) {
             if (hasButtons === false) {
                 throw new BuildValidationError(
@@ -109,6 +109,8 @@ class ActionRowComponent extends BaseComponent<
                         [`actionRow[${i}]`],
                     );
                 }
+
+                components[i] = component;
             } catch (e) {
                 if (!(e instanceof BuildValidationError)) throw e;
 
