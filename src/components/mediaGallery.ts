@@ -26,7 +26,7 @@ class MediaGalleryComponentItem {
         return this.data.description;
     }
 
-    get Spoiler() {
+    get IsSpoiler() {
         return this.data.spoiler;
     }
 

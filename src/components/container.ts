@@ -63,7 +63,7 @@ class ContainerComponent extends BaseComponent<
         return this.data.accent_color;
     }
 
-    get Spoiler() {
+    get IsSpoiler() {
         return this.data.spoiler;
     }
 

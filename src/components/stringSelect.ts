@@ -22,6 +22,26 @@ interface SelectOptionData {
 class SelectOption {
     constructor(private data: SelectOptionData) {}
 
+    get Label() {
+        return this.data.label;
+    }
+
+    get Value() {
+        return this.data.value;
+    }
+
+    get Description() {
+        return this.data.description;
+    }
+
+    get Emoji() {
+        return this.data.emoji;
+    }
+
+    get IsDefault() {
+        return this.data.default;
+    }
+
     label(name: string) {
         this.data.label = name;
         return this;
