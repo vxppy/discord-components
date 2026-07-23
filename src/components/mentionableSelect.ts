@@ -30,9 +30,26 @@ class MentionableSelectComponent extends BaseActionComponent<
         super(data);
     }
 
-    customId(name: string) {
-        this.data.custom_id = name;
-        return this;
+    get Type(): ComponentType.MentionableSelect {
+        return ComponentType.MentionableSelect;
+    }
+
+    get Placeholder() {
+        return this.data.placeholder;
+    }
+
+    get MinValue() {
+        return this.data.min_values;
+    }
+
+    get MaxValues() {
+        return this.data.max_values;
+    }
+
+    get DefaultValues():
+        | readonly Mentionable<MentionableValue.User | MentionableValue.Role>[]
+        | undefined {
+        return this.data.default_values && [...this.data.default_values];
     }
 
     placeholder(content: string) {
@@ -54,11 +71,6 @@ class MentionableSelectComponent extends BaseActionComponent<
         }
 
         this.data.max_values = count;
-    }
-
-    disable(state: boolean = true) {
-        this.data.disabled = state;
-        return this;
     }
 
     defaultValues(

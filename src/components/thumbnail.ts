@@ -22,6 +22,26 @@ class ThumbnailComponent extends BaseComponent<
         super(data);
     }
 
+    get Type(): ComponentType.Thumbnail {
+        return ComponentType.Thumbnail;
+    }
+
+    get Url() {
+        return this.data.url;
+    }
+
+    get Description() {
+        return this.data.description;
+    }
+
+    get Spoiler() {
+        return this.data.spoiler;
+    }
+
+    link(url: string) {
+        this.data.url = url;
+    }
+
     description(description: string) {
         this.data.description = description;
         return this;

@@ -49,6 +49,14 @@ class ActionRowComponent extends BaseComponent<
         super(data);
     }
 
+    get Type(): ComponentType.ActionRow {
+        return ComponentType.ActionRow;
+    }
+
+    get Components(): readonly ActionRowChild[] {
+        return [...this.data.components];
+    }
+
     items(...components: FlattenableArray<ActionRowChild>) {
         this.data.components = normalize(components);
     }

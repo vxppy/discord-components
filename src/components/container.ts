@@ -51,6 +51,22 @@ class ContainerComponent extends BaseComponent<
         super(data);
     }
 
+    get Type(): ComponentType.Container {
+        return ComponentType.Container;
+    }
+
+    get Components(): readonly ContainerChild[] {
+        return [...this.data.components];
+    }
+
+    get AccentColor() {
+        return this.data.accent_color;
+    }
+
+    get Spoiler() {
+        return this.data.spoiler;
+    }
+
     accent(color: ColorResolable) {
         this.data.accent_color =
             typeof color == 'number' ? color : parseHex(color);

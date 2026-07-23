@@ -18,8 +18,24 @@ class FileComponent extends BaseComponent<
         super(data);
     }
 
-    clone(): this {
-        return new FileComponent({ ...this.data }) as this;
+    get Type(): ComponentType.File {
+        return ComponentType.File;
+    }
+
+    get File() {
+        return this.data.file;
+    }
+
+    get Name() {
+        return this.data.name;
+    }
+
+    get Spoiler() {
+        return this.data.spoiler;
+    }
+
+    file(url: string) {
+        this.data.file = url;
     }
 
     spoiler(state: boolean = true) {
@@ -30,6 +46,10 @@ class FileComponent extends BaseComponent<
     name(value: string) {
         this.data.name = value;
         return this;
+    }
+
+    clone(): this {
+        return new FileComponent({ ...this.data }) as this;
     }
 
     toJSON(): APIFileComponent {

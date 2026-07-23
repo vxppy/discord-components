@@ -18,6 +18,22 @@ interface GalleryItemData {
 class MediaGalleryComponentItem {
     constructor(private data: GalleryItemData) {}
 
+    get Url() {
+        return this.data.url;
+    }
+
+    get Description() {
+        return this.data.description;
+    }
+
+    get Spoiler() {
+        return this.data.spoiler;
+    }
+
+    link(url: string) {
+        this.data.url = url;
+    }
+
     description(value: string) {
         this.data.description = value;
         return this;
@@ -58,6 +74,14 @@ class MediaGalleryComponent extends BaseComponent<
 > {
     constructor(data: MediaGalleryData) {
         super(data);
+    }
+
+    get Type(): ComponentType.MediaGallery {
+        return ComponentType.MediaGallery;
+    }
+
+    get GalleryItems(): readonly MediaGalleryComponentItem[] {
+        return [...this.data.items];
     }
 
     items(...components: FlattenableArray<MediaGalleryComponentItem>) {

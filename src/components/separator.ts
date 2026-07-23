@@ -22,6 +22,18 @@ class SeparatorComponent extends BaseComponent<
         super(data);
     }
 
+    get Type(): ComponentType.Separator {
+        return ComponentType.Separator;
+    }
+
+    get Divider() {
+        return this.data.divider;
+    }
+
+    get Spacing() {
+        return this.data.spacing;
+    }
+
     id(id: number) {
         return new SeparatorComponent({ ...this.data, id }) as this;
     }

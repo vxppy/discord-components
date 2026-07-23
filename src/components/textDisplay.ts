@@ -226,6 +226,14 @@ class TextDisplayComponent
         super(data);
     }
 
+    get Type(): ComponentType.TextDisplay {
+        return ComponentType.TextDisplay;
+    }
+
+    get Content() {
+        return this.serializeContent();
+    }
+
     content(...parts: FlattenableArray<TextNodeResolveable>) {
         this.parts = optionsToNode(parts);
         return this;

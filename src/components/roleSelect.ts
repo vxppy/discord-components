@@ -27,9 +27,24 @@ class RoleSelectComponent extends BaseActionComponent<
         super(data);
     }
 
-    customId(name: string) {
-        this.data.custom_id = name;
-        return this;
+    get Type(): ComponentType.RoleSelect {
+        return ComponentType.RoleSelect;
+    }
+
+    get Placeholder() {
+        return this.data.placeholder;
+    }
+
+    get MinValue() {
+        return this.data.min_values;
+    }
+
+    get MaxValues() {
+        return this.data.max_values;
+    }
+
+    get DefaultValues(): readonly string[] | undefined {
+        return this.data.default_values && [...this.data.default_values];
     }
 
     placeholder(content: string) {
@@ -51,11 +66,6 @@ class RoleSelectComponent extends BaseActionComponent<
         }
 
         this.data.max_values = count;
-    }
-
-    disable(state: boolean = true) {
-        this.data.disabled = state;
-        return this;
     }
 
     defaultValues(...values: string[]) {

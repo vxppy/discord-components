@@ -30,6 +30,18 @@ class SectionComponent extends BaseComponent<
         super(data);
     }
 
+    get Type(): ComponentType.Section {
+        return ComponentType.Section;
+    }
+
+    get Components(): readonly SectionChild[] {
+        return [...this.data.components];
+    }
+
+    get Accessory() {
+        return this.data.accessory;
+    }
+
     accessory(accessory: SectionAccessory) {
         this.data.accessory = accessory;
         return this;

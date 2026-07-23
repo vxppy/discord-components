@@ -43,6 +43,12 @@ export abstract class BaseComponent<
     abstract clone(): this;
     abstract toJSON(): TPayload;
 
+    abstract get Type(): TType;
+
+    get Id() {
+        return this.data.id;
+    }
+
     id(id: number) {
         this.data.id = id;
     }
@@ -61,13 +67,21 @@ export abstract class BaseActionComponent<
         super(payload);
     }
 
-    disable(state: boolean = true) {
-        this.data.disabled = state;
-        return this;
+    get CustomId() {
+        return this.data.custom_id;
+    }
+
+    get Disabled() {
+        return this.data.disabled;
     }
 
     customId(id: string) {
         this.data.custom_id = id;
+        return this;
+    }
+
+    disable(state: boolean = true) {
+        this.data.disabled = state;
         return this;
     }
 }

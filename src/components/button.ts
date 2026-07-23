@@ -31,6 +31,30 @@ class ButtonComponent extends BaseActionComponent<
         super(data);
     }
 
+    get Type(): ComponentType.Button {
+        return ComponentType.Button;
+    }
+
+    get Style() {
+        return this.data.style;
+    }
+
+    get Label() {
+        return this.data.label;
+    }
+
+    get CustomId() {
+        return this.data.custom_id;
+    }
+
+    get Url() {
+        return this.data.url;
+    }
+
+    get SkuId() {
+        return this.data.sku_id;
+    }
+
     /**
      * Manually set the style of button. Not recommended for normal use
      */
@@ -80,11 +104,6 @@ class ButtonComponent extends BaseActionComponent<
 
     emoji(emoji?: EmojiResolveable) {
         this.data.emoji = resolveEmoji(emoji);
-        return this;
-    }
-
-    customId(id: string): this {
-        this.data.custom_id = id;
         return this;
     }
 

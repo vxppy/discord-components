@@ -22,10 +22,6 @@ interface SelectOptionData {
 class SelectOption {
     constructor(private data: SelectOptionData) {}
 
-    clone() {
-        return new SelectOption({ ...this.data });
-    }
-
     label(name: string) {
         this.data.label = name;
         return this;
@@ -50,6 +46,10 @@ class SelectOption {
     default(state: boolean = true) {
         this.data.default = state;
         return this;
+    }
+
+    clone() {
+        return new SelectOption({ ...this.data });
     }
 
     toJSON() {
@@ -85,6 +85,26 @@ class StringSelectComponent extends BaseActionComponent<
         super(data);
     }
 
+    get Type(): ComponentType.StringSelect {
+        return ComponentType.StringSelect;
+    }
+
+    get Placeholder() {
+        return this.data.placeholder;
+    }
+
+    get MinValue() {
+        return this.data.min_values;
+    }
+
+    get MaxValues() {
+        return this.data.max_values;
+    }
+
+    get Options(): readonly SelectOption[] {
+        return this.data.options;
+    }
+
     options(...options: FlattenableArray<StringSelectOption>) {
         this.data.options = normalizeOptions(options);
         return this;
@@ -114,11 +134,6 @@ class StringSelectComponent extends BaseActionComponent<
         }
 
         this.data.max_values = count;
-    }
-
-    disable(state: boolean = true) {
-        this.data.disabled = state;
-        return this;
     }
 
     clone() {
