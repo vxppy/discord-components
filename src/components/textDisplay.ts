@@ -112,11 +112,11 @@ const rfToContent = (data: RichTextData): string => {
     }
 
     if (data.orderedItem !== undefined) {
-        content = `${' '.repeat(Math.min(0, data.orderedItem) * 2)}1. ${content}`;
+        content = `${' '.repeat(Math.max(0, data.orderedItem) * 2)}1. ${content}`;
     }
 
     if (data.unorderedItem !== undefined) {
-        content = `${' '.repeat(Math.min(0, data.unorderedItem) * 2)}* ${content}`;
+        content = `${' '.repeat(Math.max(0, data.unorderedItem) * 2)}* ${content}`;
     }
 
     if (data.link) {
@@ -186,12 +186,12 @@ class TextNode implements TextFormat {
         return this;
     }
 
-    ordered(depth?: number): this {
+    ordered(depth: number = 0): this {
         this.rf.orderedItem = depth;
         return this;
     }
 
-    unordered(depth?: number): this {
+    unordered(depth: number = 0): this {
         this.rf.unorderedItem = depth;
         return this;
     }
@@ -296,12 +296,12 @@ class TextDisplayComponent
         return this;
     }
 
-    ordered(depth?: number): this {
+    ordered(depth: number = 0): this {
         this.rf.orderedItem = depth;
         return this;
     }
 
-    unordered(depth?: number): this {
+    unordered(depth: number = 0): this {
         this.rf.unorderedItem = depth;
         return this;
     }
