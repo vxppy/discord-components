@@ -96,6 +96,18 @@ const rfToContent = (data: RichTextData): string => {
         content = `||${content}||`;
     }
 
+    if (data.link) {
+        content = `[${content}](${data.link})`;
+    }
+
+    if (data.orderedItem !== undefined) {
+        content = `${' '.repeat(Math.max(0, data.orderedItem) * 2)}1. ${content}`;
+    }
+
+    if (data.unorderedItem !== undefined) {
+        content = `${' '.repeat(Math.max(0, data.unorderedItem) * 2)}* ${content}`;
+    }
+
     if (data.format & RichTextFormat.Quote) {
         content = `> ${content}`;
     }
@@ -109,18 +121,6 @@ const rfToContent = (data: RichTextData): string => {
             data.level == -1
                 ? `-# ${content}`
                 : `${'#'.repeat(Math.max(1, Math.min(data.level, 3)))} ${content}`;
-    }
-
-    if (data.orderedItem !== undefined) {
-        content = `${' '.repeat(Math.max(0, data.orderedItem) * 2)}1. ${content}`;
-    }
-
-    if (data.unorderedItem !== undefined) {
-        content = `${' '.repeat(Math.max(0, data.unorderedItem) * 2)}* ${content}`;
-    }
-
-    if (data.link) {
-        content = `[${content}](${data.link})`;
     }
 
     return content;
