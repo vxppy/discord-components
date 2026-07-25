@@ -3,8 +3,9 @@ import type { FlattenableArray } from '../utils/normalize.js';
 import normalize from '../utils/normalize.js';
 import type { APITextDisplayComponent } from 'discord-api-types/v10';
 import { ComponentType } from 'discord-api-types/v9';
+import BuildValidationError from '../error.js';
 
-const RichTextFormat = {
+const RichTextOptions = {
     Bold: 1 << 0,
     Italic: 1 << 1,
     Underline: 1 << 2,
@@ -16,7 +17,8 @@ const RichTextFormat = {
     BlockQuote: 1 << 7,
 };
 
-interface BaseRichTextData {
+interface RichTextFormat {
+    format: number;
     language?: string;
     level?: number;
     link?: string;
@@ -24,75 +26,36 @@ interface BaseRichTextData {
     unorderedItem?: number;
 }
 
-type BareRichTextData = BaseRichTextData & { format: number };
+type TextNodeResolveable = string | TextDisplayComponent;
 
-type RichTextData = BareRichTextData & {
-    content: string;
-};
-
-type RichTextResolvable = BaseRichTextData & {
-    content: string;
-    format?: number;
-};
-
-interface TextFormat {
-    bold(): this;
-    italic(): this;
-    underline(): this;
-    strikeThrough(): this;
-
-    spoiler(): this;
-
-    quote(): this;
-    blockQuote(): this;
-
-    inlineBlock(): this;
-    codeblock(language?: string): this;
-
-    heading(level: 1 | 2 | 3): this;
-    small(): this;
-
-    ordered(depth?: number): this;
-    unordered(depth?: number): this;
-
-    link(link: string): this;
-}
-
-type TextNodeResolveable = string | RichTextResolvable | TextNode;
-
-const optionsToNode = (nodes: FlattenableArray<TextNodeResolveable>) =>
-    normalize(nodes).map((i) => (i instanceof TextNode ? i : textn(i)));
-
-const rfToContent = (data: RichTextData): string => {
-    let content = data.content;
-
-    if (data.format & RichTextFormat.Bold) {
+const formatContent = (content: string, data: RichTextFormat): string => {
+    if (data.format & RichTextOptions.Bold) {
         content = `**${content}**`;
     }
 
-    if (data.format & RichTextFormat.Italic) {
+    if (data.format & RichTextOptions.Italic) {
         content = `*${content}*`;
     }
 
-    if (data.format & RichTextFormat.Underline) {
+    if (data.format & RichTextOptions.Underline) {
         content = `__${content}__`;
     }
 
-    if (data.format & RichTextFormat.StrikeThrough) {
+    if (data.format & RichTextOptions.StrikeThrough) {
         content = `~~${content}~~`;
     }
 
-    if (data.format & RichTextFormat.InlineCodeBlock) {
+    if (data.format & RichTextOptions.InlineCodeBlock) {
         content = content.includes('`')
             ? `\`\`${content}\`\``
             : `\`${content}\``;
     }
 
-    if (data.format & RichTextFormat.Codeblock) {
+    if (data.format & RichTextOptions.Codeblock) {
         content = `\`\`\`${data.language ? `${data.language}\n` : ''}${content}\`\`\``;
     }
 
-    if (data.format & RichTextFormat.Spoiler) {
+    if (data.format & RichTextOptions.Spoiler) {
         content = `||${content}||`;
     }
 
@@ -108,11 +71,11 @@ const rfToContent = (data: RichTextData): string => {
         content = `${' '.repeat(Math.max(0, data.unorderedItem) * 2)}* ${content}`;
     }
 
-    if (data.format & RichTextFormat.Quote) {
+    if (data.format & RichTextOptions.Quote) {
         content = `> ${content}`;
     }
 
-    if (data.format & RichTextFormat.BlockQuote) {
+    if (data.format & RichTextOptions.BlockQuote) {
         content = `>>> ${content}`;
     }
 
@@ -126,104 +89,53 @@ const rfToContent = (data: RichTextData): string => {
     return content;
 };
 
-class TextNode implements TextFormat {
-    constructor(private rf: RichTextData) {}
-
-    bold(): this {
-        this.rf.format |= RichTextFormat.Bold;
-        return this;
-    }
-
-    italic(): this {
-        this.rf.format |= RichTextFormat.Italic;
-        return this;
-    }
-
-    underline(): this {
-        this.rf.format |= RichTextFormat.Underline;
-        return this;
-    }
-
-    strikeThrough(): this {
-        this.rf.format |= RichTextFormat.StrikeThrough;
-        return this;
-    }
-
-    inlineBlock(): this {
-        this.rf.format |= RichTextFormat.InlineCodeBlock;
-        return this;
-    }
-
-    codeblock(language?: string): this {
-        this.rf.format |= RichTextFormat.Codeblock;
-        this.rf.language = language;
-
-        return this;
-    }
-
-    small(): this {
-        this.rf.level = -1;
-        return this;
-    }
-
-    heading(level: 1 | 2 | 3 = 1): this {
-        this.rf.level = level;
-        return this;
-    }
-
-    spoiler(): this {
-        this.rf.format |= RichTextFormat.Spoiler;
-        return this;
-    }
-
-    quote(): this {
-        this.rf.format |= RichTextFormat.Quote;
-        return this;
-    }
-
-    blockQuote(): this {
-        this.rf.format |= RichTextFormat.BlockQuote;
-        return this;
-    }
-
-    ordered(depth: number = 0): this {
-        this.rf.orderedItem = depth;
-        return this;
-    }
-
-    unordered(depth: number = 0): this {
-        this.rf.unorderedItem = depth;
-        return this;
-    }
-
-    link(link: string): this {
-        this.rf.link = link;
-        return this;
-    }
-
-    clone() {
-        return new TextNode({ ...this.rf });
-    }
-
-    toString() {
-        return rfToContent(this.rf);
-    }
+interface RichTextStorage {
+    content?: string;
+    children?: TextDisplayComponent[];
 }
 
-class TextDisplayComponent
-    extends BaseComponent<
-        ComponentType.TextDisplay,
-        BaseComponentData,
-        APITextDisplayComponent
-    >
-    implements TextFormat
-{
+const partsToNode = (
+    children: FlattenableArray<TextNodeResolveable>,
+): RichTextStorage => {
+    const formatted = normalize(children);
+
+    if (formatted.length == 1 && typeof formatted[0] == 'string') {
+        return {
+            content: formatted[0].trim(),
+        };
+    }
+
+    const result: RichTextStorage = {
+        children: [],
+    };
+
+    for (const item of formatted) {
+        if (item instanceof TextDisplayComponent) {
+            result.children!.push(item);
+        } else {
+            result.children!.push(
+                new TextDisplayComponent({
+                    content: item,
+                }),
+            );
+        }
+    }
+
+    return result;
+};
+
+class TextDisplayComponent extends BaseComponent<
+    ComponentType.TextDisplay,
+    BaseComponentData,
+    APITextDisplayComponent
+> {
+    private marked = false;
+
     constructor(
-        private parts: TextNode[] = [],
-        private rf: BareRichTextData = { format: 0 },
-        data: BaseComponentData = {},
+        private storage: RichTextStorage = {},
+        private formatting: RichTextFormat = { format: 0 },
     ) {
-        super(data);
+        super({});
     }
 
     get Type(): ComponentType.TextDisplay {
@@ -231,124 +143,154 @@ class TextDisplayComponent
     }
 
     get Content() {
-        return this.serializeContent();
+        return this.toString();
     }
 
     content(...parts: FlattenableArray<TextNodeResolveable>) {
-        this.parts = optionsToNode(parts);
+        this.storage = partsToNode(parts);
         return this;
     }
 
     bold(): this {
-        this.rf.format |= RichTextFormat.Bold;
+        this.formatting.format |= RichTextOptions.Bold;
         return this;
     }
 
     italic(): this {
-        this.rf.format |= RichTextFormat.Italic;
+        this.formatting.format |= RichTextOptions.Italic;
         return this;
     }
 
     underline(): this {
-        this.rf.format |= RichTextFormat.Underline;
+        this.formatting.format |= RichTextOptions.Underline;
         return this;
     }
 
     strikeThrough(): this {
-        this.rf.format |= RichTextFormat.StrikeThrough;
+        this.formatting.format |= RichTextOptions.StrikeThrough;
         return this;
     }
 
     inlineBlock(): this {
-        this.rf.format |= RichTextFormat.InlineCodeBlock;
+        this.formatting.format |= RichTextOptions.InlineCodeBlock;
         return this;
     }
 
     codeblock(language?: string): this {
-        this.rf.format |= RichTextFormat.Codeblock;
-        this.rf.language = language;
+        this.formatting.format |= RichTextOptions.Codeblock;
+        this.formatting.language = language;
 
         return this;
     }
 
     small(): this {
-        this.rf.level = -1;
+        this.formatting.level = -1;
         return this;
     }
 
     heading(level: 1 | 2 | 3 = 1): this {
-        this.rf.level = level;
+        this.formatting.level = level;
         return this;
     }
 
     spoiler(): this {
-        this.rf.format |= RichTextFormat.Spoiler;
+        this.formatting.format |= RichTextOptions.Spoiler;
         return this;
     }
 
     quote(): this {
-        this.rf.format |= RichTextFormat.Quote;
+        this.formatting.format |= RichTextOptions.Quote;
         return this;
     }
 
     blockQuote(): this {
-        this.rf.format |= RichTextFormat.BlockQuote;
+        this.formatting.format |= RichTextOptions.BlockQuote;
         return this;
     }
 
     ordered(depth: number = 0): this {
-        this.rf.orderedItem = depth;
+        this.formatting.orderedItem = depth;
         return this;
     }
 
     unordered(depth: number = 0): this {
-        this.rf.unorderedItem = depth;
+        this.formatting.unorderedItem = depth;
         return this;
     }
 
     link(link: string): this {
-        this.rf.link = link;
+        this.formatting.link = link;
         return this;
     }
 
     clone(): this {
         return new TextDisplayComponent(
-            this.parts.map((i) => i.clone()),
-            { ...this.rf },
-            { ...this.data },
+            {
+                content: this.storage.content,
+                children: this.storage.children?.map((i) => i.clone()),
+            },
+            { ...this.formatting },
         ) as this;
     }
 
-    serializeContent() {
-        const content = this.parts.map((i) => i.toString()).join('');
+    toString(): string {
+        if (this.storage.content) {
+            return formatContent(this.storage.content, this.formatting);
+        }
 
-        return rfToContent({ content, ...this.rf });
+        if (this.marked) {
+            throw new BuildValidationError(
+                'Cyclic loop detected when trying to convert to string',
+                ['text.content'],
+            );
+        }
+
+        this.marked = true;
+
+        let content = '';
+        try {
+            for (let i = 0; i < this.storage.children!.length; i++) {
+                const child = this.storage.children![i]!;
+
+                try {
+                    content += child.toString();
+                } catch (e) {
+                    if (e instanceof BuildValidationError) {
+                        throw new BuildValidationError(e.reason, [
+                            `text.parts[${i}]`,
+                            ...e.path,
+                        ]);
+                    }
+                    throw e;
+                }
+            }
+        } finally {
+            this.marked = false;
+        }
+
+        return formatContent(content, this.formatting);
     }
 
     toJSON(): APITextDisplayComponent {
-        const content = this.serializeContent();
+        const content = this.toString().trim();
+
+        if (!content.length) {
+            throw new BuildValidationError(
+                'Empty content in text display component',
+                ['text.content'],
+            );
+        }
 
         return {
             type: ComponentType.TextDisplay,
             ...this.data,
-            content,
+            content: this.toString().trim(),
         };
     }
 }
 
 export function text(...parts: FlattenableArray<TextNodeResolveable>) {
-    return new TextDisplayComponent(optionsToNode(parts));
+    return new TextDisplayComponent(partsToNode(parts));
 }
 
-export function textn(part: string | RichTextResolvable) {
-    return new TextNode(
-        typeof part == 'string'
-            ? { content: part, format: 0 }
-            : {
-                  ...part,
-                  format: part.format === undefined ? 0 : part.format,
-              },
-    );
-}
-
-export type { TextDisplayComponent, TextNode };
+export type { TextDisplayComponent };
