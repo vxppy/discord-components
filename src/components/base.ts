@@ -50,6 +50,7 @@ export abstract class BaseComponent<
 
     id(id: number) {
         this.data.id = id;
+        return this;
     }
 
     toString() {
