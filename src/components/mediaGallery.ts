@@ -1,6 +1,9 @@
 import {
     BaseComponent,
     type BaseComponentData,
+    type CanSpoiler,
+    type HasDescription,
+    type HasUrl,
     type PartList,
 } from './base.js';
 import BuildValidationError from '../error.js';
@@ -19,7 +22,7 @@ interface GalleryItemData {
     spoiler?: boolean;
 }
 
-class MediaGalleryComponentItem {
+class MediaGalleryComponentItem implements CanSpoiler, HasDescription, HasUrl {
     constructor(private data: GalleryItemData) {}
 
     get Url() {
@@ -34,8 +37,21 @@ class MediaGalleryComponentItem {
         return this.data.spoiler;
     }
 
-    link(url: string) {
+    /**
+     * Sets the gallery item URL.
+     *
+     * The value can be either:
+     * - A url to image resource
+     * - An attachment URL in the format `attachment://<filename>`
+     *
+     * @example
+     * mediaGalleryItem.file('attachment://my_image.png')
+     *
+     * @param url The url of the gallery item.
+     */
+    url(url: string) {
         this.data.url = url;
+        return this;
     }
 
     description(value: string) {
@@ -189,6 +205,17 @@ class MediaGalleryComponent
     }
 }
 
+/**
+ * Create MediaGalleryComponentItem
+ * The value can be either:
+ * - A url to image resource
+ * - An attachment URL in the format `attachment://<filename>`
+ *
+ * @example
+ * mediaGalleryItem.file('attachment://my_image.png')
+ *
+ * @param url The url of the gallery item.
+ */
 export function galleryItem(url: string) {
     return new MediaGalleryComponentItem({ url });
 }

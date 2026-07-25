@@ -1,7 +1,12 @@
-import { BaseComponent, type BaseComponentData } from './base.js';
+import {
+    BaseComponent,
+    type BaseComponentData,
+    type CanSpoiler,
+} from './base.js';
 import requireField from '../utils/requireField.js';
 import type { APIFileComponent } from 'discord-api-types/v10';
 import { ComponentType } from 'discord-api-types/v9';
+import BuildValidationError from '../error.js';
 
 interface FileData extends BaseComponentData {
     file: string;
@@ -9,11 +14,10 @@ interface FileData extends BaseComponentData {
     spoiler?: boolean;
 }
 
-class FileComponent extends BaseComponent<
-    ComponentType.File,
-    FileData,
-    APIFileComponent
-> {
+class FileComponent
+    extends BaseComponent<ComponentType.File, FileData, APIFileComponent>
+    implements CanSpoiler
+{
     constructor(data: FileData) {
         super(data);
     }
@@ -22,29 +26,60 @@ class FileComponent extends BaseComponent<
         return ComponentType.File;
     }
 
+    /**
+     * The url of the file
+     */
     get File() {
         return this.data.file;
     }
 
+    /**
+     * The name of the file
+     */
     get Name() {
         return this.data.name;
     }
 
-    get Spoiler() {
+    get IsSpoiler() {
         return this.data.spoiler;
     }
 
+    /**
+     * Sets the file URL.
+     *
+     * The value can be either:
+     * - A filename, such as `my_image.png`
+     * - An attachment URL in the format `attachment://<filename>`
+     *
+     * @example
+     * fileComponent.file('attachment://my_image.png')
+     *
+     * @param url The file URL or filename.
+     */
     file(url: string) {
-        this.data.file = url;
-    }
-
-    spoiler(state: boolean = true) {
-        this.data.spoiler = state;
+        if (url.includes('://')) {
+            if (!url.startsWith('attachment://'))
+                throw new BuildValidationError(
+                    'File url must begin with attachment://',
+                    ['file.name'],
+                );
+        } else {
+            this.data.file = `attachment://${url}`;
+        }
         return this;
     }
 
-    name(value: string) {
-        this.data.name = value;
+    spoiler(spoiler: boolean = true) {
+        this.data.spoiler = spoiler;
+        return this;
+    }
+
+    /**
+     * Sets the name of the file
+     * @param name Name of the file
+     */
+    name(name: string) {
+        this.data.name = name;
         return this;
     }
 
@@ -69,6 +104,18 @@ class FileComponent extends BaseComponent<
     }
 }
 
+/**
+ * Creates a new FileComponent
+ *
+ * The file can be either:
+ * - A filename, such as `my_image.png`
+ * - An attachment URL in the format `attachment://<filename>`
+ *
+ * @example
+ * fileComponent.file('attachment://my_image.png')
+ *
+ * @param url The file URL or filename.
+ */
 export function fileItem(file: string) {
     return new FileComponent({ file });
 }

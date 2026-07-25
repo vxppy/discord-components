@@ -1,6 +1,6 @@
 import {
-    BaseActionComponent,
-    type BaseActionComponentData,
+    BaseInteractiveComponent,
+    type BaseInteractiveComponentData,
     type EmojiResolveable,
     type PartialEmoji,
 } from './base.js';
@@ -13,7 +13,7 @@ import {
     type APIButtonComponent,
 } from 'discord-api-types/v10';
 
-interface ButtonData extends BaseActionComponentData {
+interface ButtonData extends BaseInteractiveComponentData {
     style?: ButtonStyle;
     emoji?: PartialEmoji;
     label?: string;
@@ -22,7 +22,7 @@ interface ButtonData extends BaseActionComponentData {
     disabled?: boolean;
 }
 
-class ButtonComponent extends BaseActionComponent<
+class ButtonComponent extends BaseInteractiveComponent<
     ComponentType.Button,
     ButtonData,
     APIButtonComponent

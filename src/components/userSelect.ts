@@ -1,7 +1,8 @@
 import {
-    BaseActionComponent,
+    BaseInteractiveComponent,
     MentionableValue,
-    type BaseActionComponentData,
+    type BaseInteractiveComponentData,
+    type SelectMenuWithoutOptions,
 } from './base.js';
 
 import BuildValidationError from '../error.js';
@@ -11,7 +12,7 @@ import {
     type APIUserSelectComponent,
 } from 'discord-api-types/v10';
 
-interface UserSelectData extends BaseActionComponentData {
+interface UserSelectData extends BaseInteractiveComponentData {
     default_values?: string[];
     placeholder?: string;
     min_values?: number;
@@ -19,11 +20,14 @@ interface UserSelectData extends BaseActionComponentData {
     disabled?: boolean;
 }
 
-class UserSelectComponent extends BaseActionComponent<
-    ComponentType.UserSelect,
-    UserSelectData,
-    APIUserSelectComponent
-> {
+class UserSelectComponent
+    extends BaseInteractiveComponent<
+        ComponentType.UserSelect,
+        UserSelectData,
+        APIUserSelectComponent
+    >
+    implements SelectMenuWithoutOptions<string>
+{
     constructor(data: UserSelectData = {}) {
         super(data);
     }
@@ -44,29 +48,31 @@ class UserSelectComponent extends BaseActionComponent<
         return this.data.max_values;
     }
 
-    get DefaultValues(): readonly string[] | undefined {
+    get DefaultValues() {
         return this.data.default_values && [...this.data.default_values];
     }
 
-    placeholder(content: string) {
-        this.data.placeholder = content;
+    placeholder(placeholder?: string) {
+        this.data.placeholder = placeholder;
         return this;
     }
 
-    minValues(count: number) {
-        if (count < 0 || count > 25) {
+    minValues(count: number = 1) {
+        if (count < 1 || count > 25) {
             throw new Error('Invalid count for string select menu');
         }
 
         this.data.min_values = count;
+        return this;
     }
 
-    maxValues(count: number) {
+    maxValues(count: number = 1) {
         if (count < 1 || count > 25) {
             throw new Error('Invalid count for string select menu');
         }
 
         this.data.max_values = count;
+        return this;
     }
 
     defaultValues(...values: string[]) {
@@ -117,6 +123,9 @@ class UserSelectComponent extends BaseActionComponent<
     }
 }
 
+/**
+ * Creates a UserSelectComponent
+ */
 export function userSelect() {
     return new UserSelectComponent();
 }

@@ -14,10 +14,6 @@ class SeparatorComponent extends BaseComponent<
     SeparatorData,
     APISeparatorComponent
 > {
-    static cache: SeparatorComponent[] = [
-        new SeparatorComponent({ divider: true, spacing: 1 }),
-    ];
-
     constructor(data: SeparatorData) {
         super(data);
     }
@@ -26,10 +22,16 @@ class SeparatorComponent extends BaseComponent<
         return ComponentType.Separator;
     }
 
-    get Divider() {
+    /**
+     * Whether the separator has a divider or not
+     */
+    get HasDivider() {
         return this.data.divider;
     }
 
+    /**
+     * The spacing of the separator
+     */
     get Spacing() {
         return this.data.spacing;
     }
@@ -42,17 +44,25 @@ class SeparatorComponent extends BaseComponent<
         const index = (Number(divider) << 1) | (spacing - 1);
 
         return (
-            this.cache[index] ??
-            (this.cache[index] = new SeparatorComponent({ divider, spacing }))
+            cache[index] ??
+            (cache[index] = new SeparatorComponent({ divider, spacing }))
         );
     }
 
-    hide(state: boolean = true) {
-        SeparatorComponent.get(!state, this.data.spacing);
+    /**
+     * Set whether the separator is hidden or not (default `true`)
+     * @param divider
+     */
+    hide(divider: boolean = true) {
+        return SeparatorComponent.get(!divider, this.data.spacing);
     }
 
-    size(value: 1 | 2) {
-        return SeparatorComponent.get(this.data.divider, value);
+    /**
+     * Set the spacing of the separator
+     * @param spacing
+     */
+    spacing(spacing: 1 | 2) {
+        return SeparatorComponent.get(this.data.divider, spacing);
     }
 
     clone(): this {
@@ -67,8 +77,15 @@ class SeparatorComponent extends BaseComponent<
     }
 }
 
+const cache: SeparatorComponent[] = [
+    new SeparatorComponent({ divider: true, spacing: 1 }),
+];
+
+/**
+ * Creates SeparatorComponent
+ */
 export function separator() {
-    return SeparatorComponent.cache[0]!;
+    return cache[0]!;
 }
 
 export type { SeparatorComponent };

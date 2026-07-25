@@ -58,6 +58,9 @@ class ActionRowComponent
         return ComponentType.ActionRow;
     }
 
+    /**
+     * The components in the action row
+     */
     get Components(): readonly ActionRowChild[] {
         return [...this.data.components];
     }
@@ -79,6 +82,10 @@ class ActionRowComponent
         return this;
     }
 
+    pop(): ActionRowChild | undefined {
+        return this.data.components.pop();
+    }
+
     shift(): ActionRowChild | undefined {
         return this.data.components.shift();
     }
@@ -86,10 +93,6 @@ class ActionRowComponent
     unshift(...parts: FlattenableArray<ActionRowChild>): this {
         this.data.components.unshift(...normalize(parts));
         return this;
-    }
-
-    pop(): ActionRowChild | undefined {
-        return this.data.components.pop();
     }
 
     insert(index: number, ...parts: FlattenableArray<ActionRowChild>): this {
@@ -114,6 +117,10 @@ class ActionRowComponent
         return this.data.components.splice(index, count, ...normalize(parts));
     }
 
+    /**
+     * Replace components in the action row
+     * @param parts The new components to replace the old with
+     */
     components(...parts: FlattenableArray<ActionRowChild>): this {
         this.data.components = normalize(parts);
         return this;
@@ -190,6 +197,10 @@ class ActionRowComponent
     }
 }
 
+/**
+ * Creates an ActionRowComponent
+ * @param components The components to add to the action row
+ */
 export function actionRow(...components: FlattenableArray<ActionRowChild>) {
     return new ActionRowComponent({ components: normalize(components) });
 }

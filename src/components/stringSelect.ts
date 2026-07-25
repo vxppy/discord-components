@@ -1,8 +1,9 @@
 import {
-    BaseActionComponent,
-    type BaseActionComponentData,
+    BaseInteractiveComponent,
+    type BaseInteractiveComponentData,
     type PartialEmoji,
     type PartList,
+    type SelectMenu,
 } from './base.js';
 import BuildValidationError from '../error.js';
 import type { FlattenableArray } from '../utils/normalize.js';
@@ -84,7 +85,7 @@ export function option(data: SelectOptionData) {
     return new SelectOption(data);
 }
 
-interface StringSelectData extends BaseActionComponentData {
+interface StringSelectData extends BaseInteractiveComponentData {
     options: SelectOption[];
     placeholder?: string;
     min_values?: number;
@@ -98,12 +99,12 @@ const normalizeOptions = (x: FlattenableArray<StringSelectOption>) =>
     normalize(x).map((i) => (i instanceof SelectOption ? i : option(i)));
 
 class StringSelectComponent
-    extends BaseActionComponent<
+    extends BaseInteractiveComponent<
         ComponentType.StringSelect,
         StringSelectData,
         APIStringSelectComponent
     >
-    implements PartList<SelectOption>
+    implements SelectMenu<string>, PartList<SelectOption>
 {
     constructor(data: StringSelectData) {
         super(data);
@@ -134,20 +135,22 @@ class StringSelectComponent
         return this;
     }
 
-    minValues(count: number) {
-        if (count < 0 || count > 25) {
+    minValues(count: number = 1) {
+        if (count < 1 || count > 25) {
             throw new Error('Invalid count for string select menu');
         }
 
         this.data.min_values = count;
+        return this;
     }
 
-    maxValues(count: number) {
+    maxValues(count: number = 1) {
         if (count < 1 || count > 25) {
             throw new Error('Invalid count for string select menu');
         }
 
         this.data.max_values = count;
+        return this;
     }
 
     first(): SelectOption | undefined {

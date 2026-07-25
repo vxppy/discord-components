@@ -1,5 +1,7 @@
 export { ComponentType, ButtonStyle } from 'discord-api-types/v10';
 
+import { BaseComponent, BaseInteractiveComponent } from './components/base.js';
+
 export * from './components/container.js';
 export * from './components/file.js';
 export * from './components/mediaGallery.js';

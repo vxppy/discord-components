@@ -1,4 +1,10 @@
-import { BaseComponent, type BaseComponentData } from './base.js';
+import {
+    BaseComponent,
+    type BaseComponentData,
+    type CanSpoiler,
+    type HasDescription,
+    type HasUrl,
+} from './base.js';
 
 import requireField from '../utils/requireField.js';
 
@@ -13,11 +19,14 @@ interface ThumbnailData extends BaseComponentData {
     spoiler?: boolean;
 }
 
-class ThumbnailComponent extends BaseComponent<
-    ComponentType.Thumbnail,
-    ThumbnailData,
-    APIThumbnailComponent
-> {
+class ThumbnailComponent
+    extends BaseComponent<
+        ComponentType.Thumbnail,
+        ThumbnailData,
+        APIThumbnailComponent
+    >
+    implements CanSpoiler, HasDescription, HasUrl
+{
     constructor(data: ThumbnailData) {
         super(data);
     }
@@ -26,6 +35,9 @@ class ThumbnailComponent extends BaseComponent<
         return ComponentType.Thumbnail;
     }
 
+    /**
+     * The url of the thumbnail
+     */
     get Url() {
         return this.data.url;
     }
@@ -34,12 +46,25 @@ class ThumbnailComponent extends BaseComponent<
         return this.data.description;
     }
 
-    get Spoiler() {
+    get IsSpoiler() {
         return this.data.spoiler;
     }
 
-    link(url: string) {
+    /**
+     * Sets the thumbnail URL.
+     *
+     * The value can be either:
+     * - A url to image resource
+     * - An attachment URL in the format `attachment://<filename>`
+     *
+     * @example
+     * thumbnailComponent.file('attachment://my_image.png')
+     *
+     * @param url The url of the thumbnail.
+     */
+    url(url: string) {
         this.data.url = url;
+        return this;
     }
 
     description(description: string) {
@@ -47,8 +72,8 @@ class ThumbnailComponent extends BaseComponent<
         return this;
     }
 
-    spoiler(state: boolean = true) {
-        this.data.spoiler = state;
+    spoiler(spoiler: boolean = true) {
+        this.data.spoiler = spoiler;
         return this;
     }
 
@@ -72,6 +97,17 @@ class ThumbnailComponent extends BaseComponent<
     }
 }
 
+/**
+ * Create a ThumbnailComponent
+ * The value can be either:
+ * - A url to image resource
+ * - An attachment URL in the format `attachment://<filename>`
+ *
+ * @example
+ * thumbnailComponent.file('attachment://my_image.png')
+ *
+ * @param url The url of the thumbnail.
+ */
 export function thumbnail(url: string) {
     return new ThumbnailComponent({ url });
 }

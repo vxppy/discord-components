@@ -1,7 +1,8 @@
 import {
-    BaseActionComponent,
+    BaseInteractiveComponent,
     MentionableValue,
-    type BaseActionComponentData,
+    type BaseInteractiveComponentData,
+    type SelectMenuWithoutOptions,
 } from './base.js';
 import BuildValidationError from '../error.js';
 import requireField from '../utils/requireField.js';
@@ -10,7 +11,7 @@ import {
     type APIChannelSelectComponent,
 } from 'discord-api-types/v10';
 
-interface ChannelSelectData extends BaseActionComponentData {
+interface ChannelSelectData extends BaseInteractiveComponentData {
     default_values?: string[];
     placeholder?: string;
     min_values?: number;
@@ -18,11 +19,14 @@ interface ChannelSelectData extends BaseActionComponentData {
     disabled?: boolean;
 }
 
-class ChannelSelectComponent extends BaseActionComponent<
-    ComponentType.ChannelSelect,
-    ChannelSelectData,
-    APIChannelSelectComponent
-> {
+class ChannelSelectComponent
+    extends BaseInteractiveComponent<
+        ComponentType.ChannelSelect,
+        ChannelSelectData,
+        APIChannelSelectComponent
+    >
+    implements SelectMenuWithoutOptions<string>
+{
     constructor(data: ChannelSelectData = {}) {
         super(data);
     }
@@ -43,29 +47,31 @@ class ChannelSelectComponent extends BaseActionComponent<
         return this.data.max_values;
     }
 
-    get DefaultValues(): readonly string[] | undefined {
+    get DefaultValues() {
         return this.data.default_values && [...this.data.default_values];
     }
 
-    placeholder(content: string) {
-        this.data.placeholder = content;
+    placeholder(placeholder?: string) {
+        this.data.placeholder = placeholder;
         return this;
     }
 
-    minValues(count: number) {
-        if (count < 0 || count > 25) {
+    minValues(count: number = 1) {
+        if (count < 1 || count > 25) {
             throw new Error('Invalid count for string select menu');
         }
 
         this.data.min_values = count;
+        return this;
     }
 
-    maxValues(count: number) {
+    maxValues(count: number = 1) {
         if (count < 1 || count > 25) {
             throw new Error('Invalid count for string select menu');
         }
 
         this.data.max_values = count;
+        return this;
     }
 
     defaultValues(...values: string[]) {
@@ -116,6 +122,9 @@ class ChannelSelectComponent extends BaseActionComponent<
     }
 }
 
+/**
+ * Creates a ChannelSelectComponent
+ */
 export function channelSelect() {
     return new ChannelSelectComponent();
 }

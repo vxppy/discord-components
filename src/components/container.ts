@@ -3,6 +3,7 @@ import {
     type BaseComponentData,
     type ColorResolable,
     type PartList,
+    type CanSpoiler,
 } from './base.js';
 import BuildValidationError from '../error.js';
 import type { FlattenableArray } from '../utils/normalize.js';
@@ -49,7 +50,7 @@ class ContainerComponent
         ContainerData,
         APIContainerComponent
     >
-    implements PartList<ContainerChild>
+    implements CanSpoiler, PartList<ContainerChild>
 {
     constructor(data: ContainerData) {
         super(data);
@@ -59,10 +60,16 @@ class ContainerComponent
         return ComponentType.Container;
     }
 
+    /**
+     * The components in the container
+     */
     get Components(): readonly ContainerChild[] {
         return [...this.data.components];
     }
 
+    /**
+     * The accent color of the container
+     */
     get AccentColor() {
         return this.data.accent_color;
     }
@@ -71,15 +78,20 @@ class ContainerComponent
         return this.data.spoiler;
     }
 
-    accent(color: ColorResolable) {
+    /**
+     * Set the accent color of the container
+     * @param color The color to set, must be either a hex code or a encoded number
+     * @returns
+     */
+    accent(color: ColorResolable = 0) {
         this.data.accent_color =
             typeof color == 'number' ? color : parseHex(color);
 
         return this;
     }
 
-    spoiler(state: boolean = true) {
-        this.data.spoiler = state;
+    spoiler(spoiler: boolean = true) {
+        this.data.spoiler = spoiler;
 
         return this;
     }
@@ -136,6 +148,10 @@ class ContainerComponent
         return this.data.components.splice(index, count, ...normalize(parts));
     }
 
+    /**
+     * Replace components in the container
+     * @param parts The new components to replace the old with
+     */
     components(...parts: FlattenableArray<ContainerChild>): this {
         this.data.components = normalize(parts);
         return this;
@@ -190,6 +206,10 @@ class ContainerComponent
     }
 }
 
+/**
+ * Creates an ContainerComponent
+ * @param components The components to add to the container
+ */
 export function container(...components: FlattenableArray<ContainerChild>) {
     return new ContainerComponent({ components: normalize(components) });
 }

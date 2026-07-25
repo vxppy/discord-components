@@ -142,40 +142,65 @@ class TextDisplayComponent extends BaseComponent<
         return ComponentType.TextDisplay;
     }
 
+    /**
+     * The formatted content of the text display
+     */
     get Content() {
-        return this.toString();
+        return this.toContentString();
     }
 
+    /**
+     * Replaces the content of the text display
+     * @param parts The new content of the text display
+     */
     content(...parts: FlattenableArray<TextNodeResolveable>) {
         this.storage = partsToNode(parts);
         return this;
     }
 
+    /**
+     * Marks the content as bold
+     */
     bold(): this {
         this.formatting.format |= RichTextOptions.Bold;
         return this;
     }
 
+    /**
+     * Marks the content as italic
+     */
     italic(): this {
         this.formatting.format |= RichTextOptions.Italic;
         return this;
     }
 
+    /**
+     * Marks the content as underline
+     */
     underline(): this {
         this.formatting.format |= RichTextOptions.Underline;
         return this;
     }
 
+    /**
+     * Marks the content as strike-through
+     */
     strikeThrough(): this {
         this.formatting.format |= RichTextOptions.StrikeThrough;
         return this;
     }
 
+    /**
+     * Marks the content as an inline block
+     */
     inlineBlock(): this {
         this.formatting.format |= RichTextOptions.InlineCodeBlock;
         return this;
     }
 
+    /**
+     * Marks the content as a codeblock
+     */
     codeblock(language?: string): this {
         this.formatting.format |= RichTextOptions.Codeblock;
         this.formatting.language = language;
@@ -183,41 +208,72 @@ class TextDisplayComponent extends BaseComponent<
         return this;
     }
 
+    /**
+     * Marks the content as a smaller
+     */
     small(): this {
         this.formatting.level = -1;
         return this;
     }
 
+    /**
+     * Marks the content as a heading
+     *
+     * level: `1` = biggest, `2` = middle, `3` = smallest
+     *
+     * @param level The level of heading
+     */
     heading(level: 1 | 2 | 3 = 1): this {
         this.formatting.level = level;
         return this;
     }
 
+    /**
+     * Marks the content as spoiler
+     */
     spoiler(): this {
         this.formatting.format |= RichTextOptions.Spoiler;
         return this;
     }
 
+    /**
+     * Marks the content as quoted
+     */
     quote(): this {
         this.formatting.format |= RichTextOptions.Quote;
         return this;
     }
 
+    /**
+     * Marks the content as a block quote
+     */
     blockQuote(): this {
         this.formatting.format |= RichTextOptions.BlockQuote;
         return this;
     }
 
+    /**
+     * Marks the content as a ordered list item
+     * @param depth the indent level of the list item
+     */
     ordered(depth: number = 0): this {
         this.formatting.orderedItem = depth;
         return this;
     }
 
+    /**
+     * Marks the content as a unordered list item
+     * @param depth the indent level of the list item
+     */
     unordered(depth: number = 0): this {
         this.formatting.unorderedItem = depth;
         return this;
     }
 
+    /**
+     * Marks the content to be placeholder for a link
+     * @param the link to mask
+     */
     link(link: string): this {
         this.formatting.link = link;
         return this;
@@ -233,7 +289,7 @@ class TextDisplayComponent extends BaseComponent<
         ) as this;
     }
 
-    toString(): string {
+    toContentString(): string {
         if (this.storage.content) {
             return formatContent(this.storage.content, this.formatting);
         }
@@ -272,7 +328,7 @@ class TextDisplayComponent extends BaseComponent<
     }
 
     toJSON(): APITextDisplayComponent {
-        const content = this.toString().trim();
+        const content = this.toContentString().trim();
 
         if (!content.length) {
             throw new BuildValidationError(
@@ -284,11 +340,15 @@ class TextDisplayComponent extends BaseComponent<
         return {
             type: ComponentType.TextDisplay,
             ...this.data,
-            content: this.toString().trim(),
+            content: content,
         };
     }
 }
 
+/**
+ * Create a TextDisplayComponent
+ * @param parts The content of the text display
+ */
 export function text(...parts: FlattenableArray<TextNodeResolveable>) {
     return new TextDisplayComponent(partsToNode(parts));
 }

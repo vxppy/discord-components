@@ -41,14 +41,24 @@ class SectionComponent
         return ComponentType.Section;
     }
 
+    /**
+     * The components in the section
+     */
     get Components(): readonly SectionChild[] {
         return [...this.data.components];
     }
 
+    /**
+     * The accessory of the section
+     */
     get Accessory() {
         return this.data.accessory;
     }
 
+    /**
+     * Sets the accessory of the section
+     * @param accessory The accessory to use
+     */
     accessory(accessory: SectionAccessory) {
         this.data.accessory = accessory;
         return this;
@@ -106,6 +116,10 @@ class SectionComponent
         return this.data.components.splice(index, count, ...normalize(parts));
     }
 
+    /**
+     * Replace components in the section
+     * @param parts The new components to replace the old with
+     */
     components(...parts: FlattenableArray<SectionChild>): this {
         this.data.components = normalize(parts);
         return this;
@@ -182,6 +196,10 @@ class SectionComponent
     }
 }
 
+/**
+ * Creates an SectionComponent
+ * @param components The components to add to the section
+ */
 export function section(...components: FlattenableArray<SectionChild>) {
     return new SectionComponent({ components: normalize(components) });
 }
