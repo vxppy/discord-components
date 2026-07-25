@@ -1,4 +1,8 @@
-import { BaseComponent, type BaseComponentData } from './base.js';
+import {
+    BaseComponent,
+    type BaseComponentData,
+    type PartList,
+} from './base.js';
 import BuildValidationError from '../error.js';
 
 import type { FlattenableArray } from '../utils/normalize.js';
@@ -38,13 +42,14 @@ interface ActionRowData extends BaseComponentData {
     components: ActionRowChild[];
 }
 
-// type ActionRowValidTypesType = (typeof ActionRowValidTypes)[number];
-
-class ActionRowComponent extends BaseComponent<
-    ComponentType.ActionRow,
-    ActionRowData,
-    APIActionRowComponent<APIComponentInMessageActionRow>
-> {
+class ActionRowComponent
+    extends BaseComponent<
+        ComponentType.ActionRow,
+        ActionRowData,
+        APIActionRowComponent<APIComponentInMessageActionRow>
+    >
+    implements PartList<ActionRowChild>
+{
     constructor(data: ActionRowData) {
         super(data);
     }
@@ -57,12 +62,61 @@ class ActionRowComponent extends BaseComponent<
         return [...this.data.components];
     }
 
-    items(...components: FlattenableArray<ActionRowChild>) {
-        this.data.components = normalize(components);
+    first(): ActionRowChild | undefined {
+        return this.data.components[0];
     }
 
-    append(...components: FlattenableArray<ActionRowChild>) {
-        this.data.components.push(...normalize(components));
+    last(): ActionRowChild | undefined {
+        return this.data.components[this.data.components.length - 1];
+    }
+
+    at(index: number): ActionRowChild | undefined {
+        return this.data.components.at(index);
+    }
+
+    push(...parts: FlattenableArray<ActionRowChild>): this {
+        this.data.components.push(...normalize(parts));
+        return this;
+    }
+
+    shift(): ActionRowChild | undefined {
+        return this.data.components.shift();
+    }
+
+    unshift(...parts: FlattenableArray<ActionRowChild>): this {
+        this.data.components.unshift(...normalize(parts));
+        return this;
+    }
+
+    pop(): ActionRowChild | undefined {
+        return this.data.components.pop();
+    }
+
+    insert(index: number, ...parts: FlattenableArray<ActionRowChild>): this {
+        this.data.components.splice(index, 0, ...normalize(parts));
+        return this;
+    }
+
+    remove(...parts: ActionRowChild[]): this {
+        this.data.components.filter((i) => parts.includes(i));
+        return this;
+    }
+
+    removeAt(index: number, count: number = 1): ActionRowChild[] {
+        return this.data.components.splice(index, count);
+    }
+
+    splice(
+        index: number,
+        count: number,
+        ...parts: FlattenableArray<ActionRowChild>
+    ): ActionRowChild[] {
+        return this.data.components.splice(index, count, ...normalize(parts));
+    }
+
+    components(...parts: FlattenableArray<ActionRowChild>): this {
+        this.data.components = normalize(parts);
+        return this;
     }
 
     clone(): this {

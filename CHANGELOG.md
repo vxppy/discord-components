@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.0.17] - 2026-07-25
+
+### Changed
+
+- Updated `actionRow`, `container`, `mediaGallery`, `section`, `stringSelect`
+    - Added array like capabilities (general operations).
+
 ## [0.0.16] - 2026-07-25
 
 ### Changed

@@ -1,9 +1,8 @@
-// import type { ComponentType } from './componentType.js';
-
 import {
     SelectMenuDefaultValueType,
     type ComponentType,
 } from 'discord-api-types/v10';
+import type { FlattenableArray } from '../utils/normalize.js';
 
 export interface PartialEmoji {
     id?: string;
@@ -71,7 +70,7 @@ export abstract class BaseActionComponent<
         return this.data.custom_id;
     }
 
-    get Disabled() {
+    get IsDisabled() {
         return this.data.disabled;
     }
 
@@ -84,4 +83,23 @@ export abstract class BaseActionComponent<
         this.data.disabled = state;
         return this;
     }
+}
+
+export interface PartList<T> {
+    first(): T | undefined;
+    last(): T | undefined;
+    at(index: number): T | undefined;
+
+    push(...parts: FlattenableArray<T>): this;
+    pop(): T | undefined;
+
+    shift(): T | undefined;
+    unshift(...parts: FlattenableArray<T>): this;
+
+    remove(...part: T[]): this;
+
+    insert(index: number, ...parts: FlattenableArray<T>): this;
+    removeAt(index: number, count?: number): T[];
+
+    splice(index: number, count: number, ...parts: FlattenableArray<T>): T[];
 }

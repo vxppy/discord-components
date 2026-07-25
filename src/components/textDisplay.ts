@@ -26,7 +26,7 @@ interface RichTextFormat {
     unorderedItem?: number;
 }
 
-type TextNodeResolveable = string | TextDisplayComponent;
+type TextNodeResolveable = string | number | boolean | TextDisplayComponent;
 
 const formatContent = (content: string, data: RichTextFormat): string => {
     if (data.format & RichTextOptions.Bold) {
@@ -115,7 +115,7 @@ const partsToNode = (
         } else {
             result.children!.push(
                 new TextDisplayComponent({
-                    content: item,
+                    content: item.toString(),
                 }),
             );
         }

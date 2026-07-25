@@ -2,6 +2,7 @@ import {
     BaseComponent,
     type BaseComponentData,
     type ColorResolable,
+    type PartList,
 } from './base.js';
 import BuildValidationError from '../error.js';
 import type { FlattenableArray } from '../utils/normalize.js';
@@ -42,11 +43,14 @@ interface ContainerData extends BaseComponentData {
     components: ContainerChild[];
 }
 
-class ContainerComponent extends BaseComponent<
-    ComponentType.Container,
-    ContainerData,
-    APIContainerComponent
-> {
+class ContainerComponent
+    extends BaseComponent<
+        ComponentType.Container,
+        ContainerData,
+        APIContainerComponent
+    >
+    implements PartList<ContainerChild>
+{
     constructor(data: ContainerData) {
         super(data);
     }
@@ -80,13 +84,60 @@ class ContainerComponent extends BaseComponent<
         return this;
     }
 
-    items(...components: FlattenableArray<ContainerChild>) {
-        this.data.components = normalize(components);
+    first(): ContainerChild | undefined {
+        return this.data.components[0];
+    }
+
+    last(): ContainerChild | undefined {
+        return this.data.components[this.data.components.length - 1];
+    }
+
+    at(index: number): ContainerChild | undefined {
+        return this.data.components.at(index);
+    }
+
+    push(...parts: FlattenableArray<ContainerChild>): this {
+        this.data.components.push(...normalize(parts));
         return this;
     }
 
-    append(...components: FlattenableArray<ContainerChild>) {
-        this.data.components.push(...normalize(components));
+    shift(): ContainerChild | undefined {
+        return this.data.components.shift();
+    }
+
+    unshift(...parts: FlattenableArray<ContainerChild>): this {
+        this.data.components.unshift(...normalize(parts));
+        return this;
+    }
+
+    pop(): ContainerChild | undefined {
+        return this.data.components.pop();
+    }
+
+    insert(index: number, ...parts: FlattenableArray<ContainerChild>): this {
+        this.data.components.splice(index, 0, ...normalize(parts));
+        return this;
+    }
+
+    remove(...parts: ContainerChild[]): this {
+        this.data.components.filter((i) => parts.includes(i));
+        return this;
+    }
+
+    removeAt(index: number, count: number = 1): ContainerChild[] {
+        return this.data.components.splice(index, count);
+    }
+
+    splice(
+        index: number,
+        count: number,
+        ...parts: FlattenableArray<ContainerChild>
+    ): ContainerChild[] {
+        return this.data.components.splice(index, count, ...normalize(parts));
+    }
+
+    components(...parts: FlattenableArray<ContainerChild>): this {
+        this.data.components = normalize(parts);
         return this;
     }
 

@@ -2,6 +2,7 @@ import {
     BaseActionComponent,
     type BaseActionComponentData,
     type PartialEmoji,
+    type PartList,
 } from './base.js';
 import BuildValidationError from '../error.js';
 import type { FlattenableArray } from '../utils/normalize.js';
@@ -96,11 +97,14 @@ type StringSelectOption = SelectOption | SelectOptionData;
 const normalizeOptions = (x: FlattenableArray<StringSelectOption>) =>
     normalize(x).map((i) => (i instanceof SelectOption ? i : option(i)));
 
-class StringSelectComponent extends BaseActionComponent<
-    ComponentType.StringSelect,
-    StringSelectData,
-    APIStringSelectComponent
-> {
+class StringSelectComponent
+    extends BaseActionComponent<
+        ComponentType.StringSelect,
+        StringSelectData,
+        APIStringSelectComponent
+    >
+    implements PartList<SelectOption>
+{
     constructor(data: StringSelectData) {
         super(data);
     }
@@ -125,16 +129,6 @@ class StringSelectComponent extends BaseActionComponent<
         return this.data.options;
     }
 
-    options(...options: FlattenableArray<StringSelectOption>) {
-        this.data.options = normalizeOptions(options);
-        return this;
-    }
-
-    append(...options: FlattenableArray<StringSelectOption>) {
-        this.data.options.push(...normalizeOptions(options));
-        return this;
-    }
-
     placeholder(content: string) {
         this.data.placeholder = content;
         return this;
@@ -154,6 +148,63 @@ class StringSelectComponent extends BaseActionComponent<
         }
 
         this.data.max_values = count;
+    }
+
+    first(): SelectOption | undefined {
+        return this.data.options[0];
+    }
+
+    last(): SelectOption | undefined {
+        return this.data.options[this.data.options.length - 1];
+    }
+
+    at(index: number): SelectOption | undefined {
+        return this.data.options.at(index);
+    }
+
+    push(...parts: FlattenableArray<SelectOption>): this {
+        this.data.options.push(...normalize(parts));
+        return this;
+    }
+
+    shift(): SelectOption | undefined {
+        return this.data.options.shift();
+    }
+
+    unshift(...parts: FlattenableArray<SelectOption>): this {
+        this.data.options.unshift(...normalize(parts));
+        return this;
+    }
+
+    pop(): SelectOption | undefined {
+        return this.data.options.pop();
+    }
+
+    insert(index: number, ...parts: FlattenableArray<SelectOption>): this {
+        this.data.options.splice(index, 0, ...normalize(parts));
+        return this;
+    }
+
+    remove(...parts: SelectOption[]): this {
+        this.data.options.filter((i) => parts.includes(i));
+        return this;
+    }
+
+    removeAt(index: number, count: number = 1): SelectOption[] {
+        return this.data.options.splice(index, count);
+    }
+
+    splice(
+        index: number,
+        count: number,
+        ...parts: FlattenableArray<SelectOption>
+    ): SelectOption[] {
+        return this.data.options.splice(index, count, ...normalize(parts));
+    }
+
+    options(...options: FlattenableArray<SelectOption>) {
+        this.data.options = normalizeOptions(options);
+        return this;
     }
 
     clone() {

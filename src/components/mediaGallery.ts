@@ -1,4 +1,8 @@
-import { BaseComponent, type BaseComponentData } from './base.js';
+import {
+    BaseComponent,
+    type BaseComponentData,
+    type PartList,
+} from './base.js';
 import BuildValidationError from '../error.js';
 import type { FlattenableArray } from '../utils/normalize.js';
 import normalize from '../utils/normalize.js';
@@ -67,11 +71,14 @@ interface MediaGalleryData extends BaseComponentData {
     items: MediaGalleryComponentItem[];
 }
 
-class MediaGalleryComponent extends BaseComponent<
-    ComponentType.MediaGallery,
-    MediaGalleryData,
-    APIMediaGalleryComponent
-> {
+class MediaGalleryComponent
+    extends BaseComponent<
+        ComponentType.MediaGallery,
+        MediaGalleryData,
+        APIMediaGalleryComponent
+    >
+    implements PartList<MediaGalleryComponentItem>
+{
     constructor(data: MediaGalleryData) {
         super(data);
     }
@@ -84,13 +91,63 @@ class MediaGalleryComponent extends BaseComponent<
         return [...this.data.items];
     }
 
-    items(...components: FlattenableArray<MediaGalleryComponentItem>) {
-        this.data.items = normalize(components);
+    first(): MediaGalleryComponentItem | undefined {
+        return this.data.items[0];
+    }
+
+    last(): MediaGalleryComponentItem | undefined {
+        return this.data.items[this.data.items.length - 1];
+    }
+
+    at(index: number): MediaGalleryComponentItem | undefined {
+        return this.data.items.at(index);
+    }
+
+    push(...parts: FlattenableArray<MediaGalleryComponentItem>): this {
+        this.data.items.push(...normalize(parts));
         return this;
     }
 
-    append(...components: FlattenableArray<MediaGalleryComponentItem>) {
-        this.data.items.push(...normalize(components));
+    shift(): MediaGalleryComponentItem | undefined {
+        return this.data.items.shift();
+    }
+
+    unshift(...parts: FlattenableArray<MediaGalleryComponentItem>): this {
+        this.data.items.unshift(...normalize(parts));
+        return this;
+    }
+
+    pop(): MediaGalleryComponentItem | undefined {
+        return this.data.items.pop();
+    }
+
+    insert(
+        index: number,
+        ...parts: FlattenableArray<MediaGalleryComponentItem>
+    ): this {
+        this.data.items.splice(index, 0, ...normalize(parts));
+        return this;
+    }
+
+    remove(...parts: MediaGalleryComponentItem[]): this {
+        this.data.items.filter((i) => parts.includes(i));
+        return this;
+    }
+
+    removeAt(index: number, count: number = 1): MediaGalleryComponentItem[] {
+        return this.data.items.splice(index, count);
+    }
+
+    splice(
+        index: number,
+        count: number,
+        ...parts: FlattenableArray<MediaGalleryComponentItem>
+    ): MediaGalleryComponentItem[] {
+        return this.data.items.splice(index, count, ...normalize(parts));
+    }
+
+    items(...parts: FlattenableArray<MediaGalleryComponentItem>): this {
+        this.data.items = normalize(parts);
         return this;
     }
 
