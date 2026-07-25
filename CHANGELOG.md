@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.0] - 2026-07-25
+
+### Changed
+
+- Updated all components to have JsDoc
+- Fixed missing returns that broke chaining
+
 ## [0.0.17] - 2026-07-25
 
 ### Changed
