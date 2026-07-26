@@ -309,7 +309,7 @@ class TextDisplayComponent extends BaseComponent<
                 const child = this.storage.children![i]!;
 
                 try {
-                    content += child.toString();
+                    content += child.toContentString();
                 } catch (e) {
                     if (e instanceof BuildValidationError) {
                         throw new BuildValidationError(e.reason, [

@@ -6,7 +6,8 @@
     "author": "vxppy",
     "type": "module",
     "scripts": {
-        "build": "tsc"
+        "build": "tsc",
+        "docs": "tsx src/docgen/main.ts"
     },
     "types": "./build/index.d.ts",
     "exports": {
@@ -38,7 +39,7 @@
     ],
     "devDependencies": {
         "discord.js": "^14.27.0",
-        "typescript": "^7.0.2"
+        "typescript": "^6.0.3"
     },
     "dependencies": {
         "discord-api-types": "^0.38.50"

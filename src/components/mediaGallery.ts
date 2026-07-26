@@ -103,6 +103,9 @@ class MediaGalleryComponent
         return ComponentType.MediaGallery;
     }
 
+    /**
+     * The gallery items in the media display
+     */
     get GalleryItems(): readonly MediaGalleryComponentItem[] {
         return [...this.data.items];
     }
@@ -162,8 +165,8 @@ class MediaGalleryComponent
         return this.data.items.splice(index, count, ...normalize(parts));
     }
 
-    items(...parts: FlattenableArray<MediaGalleryComponentItem>): this {
-        this.data.items = normalize(parts);
+    items(...items: FlattenableArray<MediaGalleryComponentItem>): this {
+        this.data.items = normalize(items);
         return this;
     }
 
@@ -220,6 +223,10 @@ export function galleryItem(url: string) {
     return new MediaGalleryComponentItem({ url });
 }
 
+/**
+ * Creates a MediaGalleryComponent
+ * @param items The gallery items you to add
+ */
 export function mediaGallery(
     ...items: FlattenableArray<MediaGalleryComponentItem>
 ) {

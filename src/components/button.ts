@@ -35,54 +35,86 @@ class ButtonComponent extends BaseInteractiveComponent<
         return ComponentType.Button;
     }
 
+    /**
+     * The style of button
+     */
     get Style() {
         return this.data.style;
     }
 
+    /**
+     * The label of button
+     */
     get Label() {
         return this.data.label;
     }
 
+    /**
+     * The customId of a normal button
+     */
     get CustomId() {
         return this.data.custom_id;
     }
 
+    /**
+     * The url of a link button
+     */
     get Url() {
         return this.data.url;
     }
 
+    /**
+     * THe skuId of a premium button
+     */
     get SkuId() {
         return this.data.sku_id;
     }
 
     /**
      * Manually set the style of button. Not recommended for normal use
+     * @deprecated
      */
     style(style: ButtonStyle) {
         this.data.style = style;
         return this;
     }
 
+    /**
+     * Makes a regular button with style `ButtonStyle.Primary`
+     */
     primary() {
         this.data.style = ButtonStyle.Primary;
         return this;
     }
 
+    /**
+     * Makes the button a regular button with style `ButtonStyle.Secondary`
+     */
     secondary() {
         this.data.style = ButtonStyle.Secondary;
         return this;
     }
 
+    /**
+     * Makes the button a regular button with style `ButtonStyle.Success`
+     */
     success() {
         this.data.style = ButtonStyle.Success;
         return this;
     }
 
+    /**
+     * Makes the button a regular button with style `ButtonStyle.Danger`
+     */
     danger() {
         this.data.style = ButtonStyle.Danger;
         return this;
     }
 
+    /**
+     * Makes the button a link button
+     * @param url The url of the button
+     */
     link(url: string) {
         this.data.style = ButtonStyle.Link;
 
@@ -90,6 +122,10 @@ class ButtonComponent extends BaseInteractiveComponent<
         return this;
     }
 
+    /**
+     * Makes the button a premium button
+     * @param skuId The skuId of the button
+     */
     premium(skuId: string) {
         this.data.style = ButtonStyle.Premium;
 
@@ -97,11 +133,26 @@ class ButtonComponent extends BaseInteractiveComponent<
         return this;
     }
 
-    label(label: string) {
+    /**
+     * Sets the label of a regular button
+     *
+     * Pass `undefined` to unset
+     *
+     * @param label The label of the button
+     */
+    label(label?: string) {
         this.data.label = label;
         return this;
     }
 
+    /**
+     * Sets the emoji of a regular button
+     *
+     * Pass `undefined` to unset
+     * Pass either a `string` or a `PartialEmoji`
+     *
+     * @param emoji The emoji of the button
+     */
     emoji(emoji?: EmojiResolveable) {
         this.data.emoji = resolveEmoji(emoji);
         return this;
