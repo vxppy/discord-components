@@ -4,6 +4,7 @@ export {
     BaseComponent,
     BaseInteractiveComponent,
     type PartialEmoji,
+    type EmojiResolvable,
 } from './components/base.js';
 
 export * from './components/container.js';
@@ -23,3 +24,5 @@ export * from './components/channelSelect.js';
 export * from './components/roleSelect.js';
 export * from './components/userSelect.js';
 export * from './components/mentionableSelect.js';
+
+export { default as emoji } from './utils/resolveEmoji.js';
