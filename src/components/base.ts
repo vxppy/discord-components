@@ -10,7 +10,7 @@ export interface PartialEmoji {
     animated?: boolean;
 }
 
-export type EmojiResolveable = string | PartialEmoji;
+export type EmojiResolvable = string | PartialEmoji;
 
 export interface BaseComponentData {
     id?: number;
@@ -62,10 +62,13 @@ export abstract class BaseComponent<
 
     /**
      * Sets the 32-bit integer identifier of the component
+     *
+     * Pass `undefined` to unset
+     *
      * @param id 32 bit id to set
      */
-    id(id: number) {
-        this.data.id = id | 0xff_ff_ff_ff;
+    id(id?: number) {
+        this.data.id = typeof id == 'number' ? id | 0xff_ff_ff_ff : undefined;
         return this;
     }
 

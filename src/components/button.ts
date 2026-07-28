@@ -1,7 +1,7 @@
 import {
     BaseInteractiveComponent,
     type BaseInteractiveComponentData,
-    type EmojiResolveable,
+    type EmojiResolvable,
     type PartialEmoji,
 } from './base.js';
 import requireField from '../utils/requireField.js';
@@ -64,15 +64,16 @@ class ButtonComponent extends BaseInteractiveComponent<
     }
 
     /**
-     * THe skuId of a premium button
+     * The skuId of a premium button
      */
     get SkuId() {
         return this.data.sku_id;
     }
 
     /**
-     * Manually set the style of button. Not recommended for normal use
-     * @deprecated
+     * Manually set the style of button.
+     * @deprecated Use the specific type of button instead
+     * @param style style of the button
      */
     style(style: ButtonStyle) {
         this.data.style = style;
@@ -149,11 +150,12 @@ class ButtonComponent extends BaseInteractiveComponent<
      * Sets the emoji of a regular button
      *
      * Pass `undefined` to unset
+     *
      * Pass either a `string` or a `PartialEmoji`
      *
      * @param emoji The emoji of the button
      */
-    emoji(emoji?: EmojiResolveable) {
+    emoji(emoji?: EmojiResolvable) {
         this.data.emoji = resolveEmoji(emoji);
         return this;
     }

@@ -1,6 +1,7 @@
 import ts from 'typescript';
 import path from 'path';
-import { closeSync, openSync, writeFileSync } from 'fs';
+import { writeFileSync } from 'fs';
+import { FileDoc, fileDocToString, MethodDoc, ParameterDocs } from './filedoc';
 
 const configFile = ts.readConfigFile('tsconfig.json', ts.sys.readFile);
 
@@ -17,47 +18,60 @@ const program = ts.createProgram({
 });
 
 const checker = program.getTypeChecker();
+const outFile = path.join(process.cwd(), 'docs/src/test.md');
 
-const outFile = path.join(process.cwd(), 'docs/test.md');
-const file = openSync(outFile, 'w');
+// const file = openSync(outFile, 'w');
 
-const emitToFile = (content: string) => {
-    writeFileSync(file, content);
-};
+// const emitToFile = (content: string) => {
+//     writeFileSync(file, content);
+// };
 
-emitToFile('<link href="shared.css" rel="stylesheet">\n\n');
-const startAll = () => {
-    emitToFile('# Symbols\n\n');
-};
+// const startAll = () => {
+//     emitToFile(
+//         '---\nlayout: reference\ntitle: ButtonComponent\n---\n\n# Symbols\n\n',
+//     );
+// };
 
-const startProperties = () => {
-    emitToFile('# Properties\n\n');
-};
+// const startProperties = () => {
+//     emitToFile('# Properties\n\n');
+// };
 
-const writeSymbol = (symbol: string) => {
-    emitToFile(`[${symbol}](#${symbol})\n\n`);
-};
+// const emitTable = (properties: string[], methods: string[]) => {
+//     emitToFile(
+//         `<div class="overview">
+//     <details open>
+//         <summary>Properties</summary>
+//             ${properties
+//                 .map(
+//                     (i) =>
+//                         `<li><a href="#property-${i}"><code>${i}</code></a></li>`,
+//                 )
+//                 .join('\n')}
+//     </details>
+//     <details open>
+//         <summary>Methods</summary>
+//         ${methods.map((i) => `<li><a href="#method-${i}"><code>${i}</code></a></li>`).join('\n')}
+//     </details>
+// </div>\n\n`,
+//     );
+// };
 
-const emitTable = (properties: string[], methods: string[]) => {
-    emitToFile(
-        `<div class="overview">
-    <details open>
-        <summary>Properties</summary>
-            ${properties.map((i) => `<ul>${i}</ul>`).join('\n            ')}
-    </details>
-    <details open>
-        <summary>Methods</summary>
-        ${methods.map((i) => `<ul>${i}</ul>`).join('\n            ')}
-    </details>
-</div>\n\n`,
-    );
-};
+// const emitPropertyDocs = (name: string, returnType: string, docs: string) => {
+//     emitToFile(
+//         `##  <a id="property-${name}">${name}</a>\n\n\`\`\`ts\nget ${name}(): ${returnType}\n\`\`\`\n\n${docs}\n\n<hr>\n\n`,
+//     );
+// };
 
-const writeGetterDocs = (name: string, returnType: string, docs: string) => {
-    emitToFile(
-        `##  <a id="${name}">${name}</a>\n\`\`\`ts\nget ${name}(): ${returnType}\n\`\`\`\n\n${docs}\n\n`,
-    );
-};
+// const startMethods = () => {
+//     emitToFile('# Methods\n\n');
+// };
+
+// const emitMethodDocs = (name: string, methods: string[], docs: string) => {
+//     emitToFile(
+//         `## <a id="method-${name}">${name}</a>\n\n\`\`\`ts\n${methods.map((i) => `${name} ${i}`).join('\n')}\n\`\`\`\n\n${docs}\n\n<hr>\n\n`,
+//     );
+// };
+//
 
 const processClass = (node: ts.ClassDeclaration) => {
     const symbol = checker.getSymbolAtLocation(node.name!)!;
@@ -82,35 +96,82 @@ const processClass = (node: ts.ClassDeclaration) => {
     properties.sort((a, b) => a.name.localeCompare(b.name));
     methods.sort((a, b) => a.name.localeCompare(b.name));
 
-    startAll();
+    const fileDoc: FileDoc = {
+        name: checker.symbolToString(symbol),
+        propertyToc: properties.map((i) => i.name),
+        methodToc: methods.map((i) => i.name),
+        properties: [],
+        methods: [],
+    };
 
-    emitTable(
-        properties.map((i) => i.name),
-        methods.map((i) => i.name),
-    );
-    // for (const symbol of [...getters, ...methods]) {
-    //     writeSymbol(symbol.name);
-    // }
-
-    startProperties();
-    for (const getter of properties) {
-        const declaration = getter.valueDeclaration!;
+    for (const property of properties) {
+        const declaration = property.valueDeclaration!;
 
         const docs = ts.displayPartsToString(
-            getter.getDocumentationComment(checker),
+            property.getDocumentationComment(checker),
         );
 
-        const getterType = checker.getTypeOfSymbolAtLocation(
-            getter,
-            declaration,
-        );
+        const type = checker.getTypeOfSymbolAtLocation(property, declaration);
 
-        writeGetterDocs(getter.name, checker.typeToString(getterType), docs);
+        fileDoc.properties.push({
+            name: property.name,
+            type: checker.typeToString(type),
+            docs,
+            tags: property.getJsDocTags(),
+        });
     }
 
-    // for (const getter of methods) {
-    //     console.log(`\x1b[33m${getter.name}\x1b[0m`);
-    // }
+    for (const method of methods) {
+        const declaration = method.valueDeclaration!;
+
+        const type = checker.getTypeOfSymbolAtLocation(method, declaration);
+        const signatureType = type.getCallSignatures();
+
+        const methodDocs: MethodDoc = {
+            name: method.name,
+            signatures: [],
+        };
+
+        for (const signature of signatureType) {
+            const returnType = checker.getReturnTypeOfSignature(signature);
+            const docs = ts.displayPartsToString(
+                signature.getDocumentationComment(checker),
+            );
+
+            const parameterDocs: ParameterDocs[] = [];
+
+            for (const parameter of signature.getParameters()) {
+                const declaration = parameter.valueDeclaration!;
+
+                const type = checker.getTypeOfSymbolAtLocation(
+                    parameter,
+                    declaration,
+                );
+
+                const docs = ts.displayPartsToString(
+                    parameter.getDocumentationComment(checker),
+                );
+
+                parameterDocs.push({
+                    name: parameter.getName(),
+                    type: checker.typeToString(type),
+                    docs,
+                });
+            }
+
+            methodDocs.signatures.push({
+                signature: checker.signatureToString(signature),
+                docs,
+                parameters: parameterDocs,
+                tags: signature.getJsDocTags(),
+                returnType: checker.typeToString(returnType),
+            });
+        }
+
+        fileDoc.methods.push(methodDocs);
+    }
+
+    writeFileSync(outFile, fileDocToString(fileDoc));
 };
 
 const processFile = (sourceFile: ts.SourceFile) => {
@@ -131,4 +192,4 @@ for (const sourceFile of program
     break;
 }
 
-closeSync(file);
+// closeSync(file);

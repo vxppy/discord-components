@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.1.1-0.1.4] - 2026-07-28
+
+- Minor bug fixes and JSDoc update
+
 ## [0.1.0] - 2026-07-25
 
 ### Changed
