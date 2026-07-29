@@ -6,9 +6,9 @@
 
 	<title>{% if component %} {{ component }} | {% else %} You forgot the name {% endif %} {{ siteName }}</title>
 
-	<link rel="stylesheet" href="/css/styles.css">
-	<link rel="stylesheet" href="/css/gridpage.css">
-	<link rel="stylesheet" href="/css/reference.css">
+	<link rel="stylesheet" href={{ "/css/styles.css" | url }}>
+	<link rel="stylesheet" href={{ "/css/gridpage.css" | url }}>
+	<link rel="stylesheet" href={{ "/css/reference.css" | url }}>
 </head>
 <body>
     <aside>{% render sidebar %}</aside>
