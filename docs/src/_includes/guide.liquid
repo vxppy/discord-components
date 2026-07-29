@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<link rel="stylesheet" href="/css/styles.css">
+	<link rel="stylesheet" href="/css/gridpage.css">
+	<title>{% if name %} {{ name }} | {% else %} You forgot the name {% endif %} {{ siteName }}</title>
+</head>
+<body>
+    <aside>{% render sidebar %}</aside>
+    <main class="page-content" aria-label="Content">
+        <div class="wrapper">
+            {{  content }}
+        </div>
+    </main>
+</body>
+</html>

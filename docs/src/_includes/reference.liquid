@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>{% if component %} {{ component }} | {% else %} You forgot the name {% endif %} {{ siteName }}</title>
+
+	<link rel="stylesheet" href="/css/styles.css">
+	<link rel="stylesheet" href="/css/gridpage.css">
+	<link rel="stylesheet" href="/css/reference.css">
+</head>
+<body>
+    <aside>{% render sidebar %}</aside>
+    <main class="page-content" aria-label="Content">
+        <div class="wrapper">
+            <div class="main-content">
+                <h1>
+                    {% if component %} {{ component }} {% else %} You
+                    forgot the name {% endif %}
+                </h1>
+
+                {{ content }}
+            </div>
+            <details class="top-level toc" open>
+                <summary>Table of Content</summary>
+                <div class="overview">
+                    <details class="nested-level" open>
+                        <summary>Properties</summary>
+                        <ul>
+                            {% for name in property_names %}
+                                <li><a href="#property-{{ name }}">{{ name }}</a></li>
+                            {% endfor %}
+                        </ul>
+                    </details>
+                    <details class="nested-level" open>
+                        <summary>Methods</summary>
+                        <ul>
+                            {% for name in method_names %}
+                                <li><a href="#method-{{ name }}">{{ name }}</a></li>
+                            {% endfor %}
+                        </ul>
+                    </details>
+                </div>
+            </details>
+            <div class="docs-wrapper">
+                <details class="top-level" open>
+                    <summary>Properties</summary>
+                    {% for property in properties %}
+                        <div class="property-doc">
+                            {{  property | markdown  }}
+                        </div>
+                    {% endfor %}
+                </details>
+                <details class="top-level" open>
+                    <summary>Methods</summary>
+                    {% for method in methods %}
+                        <div class="method-doc">
+                            {{  method | markdown  }}
+                        </div>
+                    {% endfor %}
+                </details>
+            </div>
+        </div>
+    </main>
+</body>

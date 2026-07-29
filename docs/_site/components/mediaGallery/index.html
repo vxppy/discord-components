@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title> MediaGalleryComponent |  @vxppy/discord-components</title>
+
+	<link rel="stylesheet" href="/css/styles.css">
+	<link rel="stylesheet" href="/css/gridpage.css">
+	<link rel="stylesheet" href="/css/reference.css">
+</head>
+<body>
+    <aside><div class="sidebar">Hi</div>
+</aside>
+    <main class="page-content" aria-label="Content">
+        <div class="wrapper">
+            <div class="main-content">
+                <h1>
+                     MediaGalleryComponent 
+                </h1>
+
+                <pre class="shiki shiki-themes github-light Espresso" style="--shiki-light:#24292e;--shiki-dark:#cad3f5;--shiki-light-bg:#fff;--shiki-dark-bg:#000000" tabindex="0"><code class="language-ts"><span class="line"><span style="--shiki-light:#D73A49;--shiki-dark:#C6A0F6">class</span><span style="--shiki-light:#6F42C1;--shiki-dark:#EED49F"> MediaGalleryComponent</span></span></code></pre>
+<h2>Builder</h2>
+<pre class="shiki shiki-themes github-light Espresso" style="--shiki-light:#24292e;--shiki-dark:#cad3f5;--shiki-light-bg:#fff;--shiki-dark-bg:#000000" tabindex="0"><code class="language-ts"><span class="line"><span style="--shiki-light:#6F42C1;--shiki-dark:#8AADF4">builder</span><span style="--shiki-light:#24292E;--shiki-dark:#CAD3F5">()</span></span>
+<span class="line"><span style="--shiki-light:#6A737D;--shiki-dark:#939AB7">// wow</span></span></code></pre>
+
+            </div>
+            <details class="top-level toc" open>
+                <summary>Table of Content</summary>
+                <div class="overview">
+                    <details class="nested-level" open>
+                        <summary>Properties</summary>
+                        <ul>
+                            
+                                <li><a href="#property-GalleryItems">GalleryItems</a></li>
+                            
+                                <li><a href="#property-Id">Id</a></li>
+                            
+                                <li><a href="#property-Type">Type</a></li>
+                            
+                        </ul>
+                    </details>
+                    <details class="nested-level" open>
+                        <summary>Methods</summary>
+                        <ul>
+                            
+                                <li><a href="#method-at">at</a></li>
+                            
+                                <li><a href="#method-clone">clone</a></li>
+                            
+                                <li><a href="#method-first">first</a></li>
+                            
+                                <li><a href="#method-id">id</a></li>
+                            
+                                <li><a href="#method-insert">insert</a></li>
+                            
+                                <li><a href="#method-items">items</a></li>
+                            
+                                <li><a href="#method-last">last</a></li>
+                            
+                                <li><a href="#method-pop">pop</a></li>
+                            
+                                <li><a href="#method-push">push</a></li>
+                            
+                                <li><a href="#method-remove">remove</a></li>
+                            
+                                <li><a href="#method-removeAt">removeAt</a></li>
+                            
+                                <li><a href="#method-shift">shift</a></li>
+                            
+                                <li><a href="#method-splice">splice</a></li>
+                            
+                                <li><a href="#method-toJSON">toJSON</a></li>
+                            
+                                <li><a href="#method-toString">toString</a></li>
+                            
+                                <li><a href="#method-unshift">unshift</a></li>
+                            
+                        </ul>
+                    </details>
+                </div>
+            </details>
+            <div class="docs-wrapper">
+                <details class="top-level" open>
+                    <summary>Properties</summary>
+                    
+                        <div class="property-doc">
+                            <h3><a id="property-GalleryItems">GalleryItems</a></h3>
+<pre class="vxppy-code"><code><span class="line"><span class="keyword">get</span> <span class="property">GalleryItems</span><span class="punctuation">(): </span><span class="keyword">readonly</span> <span class="class">MediaGalleryComponentItem</span>[]</span></code></pre>
+<p>The gallery items in the media display</p>
+
+                        </div>
+                    
+                        <div class="property-doc">
+                            <h3><a id="property-Id">Id</a></h3>
+<pre class="vxppy-code"><code><span class="line"><span class="keyword">get</span> <span class="property">Id</span><span class="punctuation">(): </span><span class="keyword">number</span> <span class="punctuation">|</span> <span class="keyword">undefined</span></span></code></pre>
+<p>The 32-bit integer identifier assigned to the component, if present.</p>
+
+                        </div>
+                    
+                        <div class="property-doc">
+                            <h3><a id="property-Type">Type</a></h3>
+<pre class="vxppy-code"><code><span class="line"><span class="keyword">get</span> <span class="property">Type</span><span class="punctuation">(): </span><span class="class">ComponentType</span><span class="punctuation">.</span>MediaGallery</span></code></pre>
+<p>The type of the component</p>
+
+                        </div>
+                    
+                </details>
+                <details class="top-level" open>
+                    <summary>Methods</summary>
+                    
+                        <div class="method-doc">
+                            <h3><a id="method-at">at</a></h3>
+<pre class="vxppy-code"><code><span class="line"><span class="method">at</span><span class="punctuation">(</span></span>
+<span class="line">    <span class="parameter">index</span><span class="punctuation">:</span> <span class="keyword">number</span></span>
+<span class="line"><span class="punctuation">):</span> <span class="class">MediaGalleryComponentItem</span> <span class="punctuation">|</span> <span class="keyword">undefined</span></span></code></pre>
+<p>Get the component at index from the component array</p>
+
+                        </div>
+                    
+                        <div class="method-doc">
+                            <h3><a id="method-clone">clone</a></h3>
+<pre class="vxppy-code"><code><span class="line"><span class="method">clone</span><span class="punctuation">():</span> <span class="class">MediaGalleryComponent</span></span></code></pre>
+<p>Deep copies the current object</p>
+
+                        </div>
+                    
+                        <div class="method-doc">
+                            <h3><a id="method-first">first</a></h3>
+<pre class="vxppy-code"><code><span class="line"><span class="method">first</span><span class="punctuation">():</span> <span class="class">MediaGalleryComponentItem</span> <span class="punctuation">|</span> <span class="keyword">undefined</span></span></code></pre>
+<p>Gets the first component from the component array</p>
+
+                        </div>
+                    
+                        <div class="method-doc">
+                            <h3><a id="method-id">id</a></h3>
+<pre class="vxppy-code"><code><span class="line"><span class="method">id</span><span class="punctuation">(</span></span>
+<span class="line">    <span class="parameter">id</span><span class="punctuation">:</span> <span class="keyword">number</span> <span class="punctuation">|</span> <span class="keyword">undefined</span></span>
+<span class="line"><span class="punctuation">):</span> <span class="class">MediaGalleryComponent</span></span></code></pre>
+<p>Sets the 32-bit integer identifier of the component</p>
+<p>Pass <code>undefined</code> to unset</p>
+
+                        </div>
+                    
+                        <div class="method-doc">
+                            <h3><a id="method-insert">insert</a></h3>
+<pre class="vxppy-code"><code><span class="line"><span class="method">insert</span><span class="punctuation">(</span></span>
+<span class="line">    <span class="parameter">index</span><span class="punctuation">:</span> <span class="keyword">number</span><span class="punctuation">,</span></span>
+<span class="line">    <span class="punctuation">...</span><span class="parameter">parts</span><span class="punctuation">:</span> <span class="class">FlattenableArray</span><span class="punctuation"><</span><span class="class">MediaGalleryComponentItem</span><span class="punctuation">></span></span>
+<span class="line"><span class="punctuation">):</span> <span class="class">MediaGalleryComponent</span></span></code></pre>
+<p>Inserts new component at the index of the component array</p>
+
+                        </div>
+                    
+                        <div class="method-doc">
+                            <h3><a id="method-items">items</a></h3>
+<pre class="vxppy-code"><code><span class="line"><span class="method">items</span><span class="punctuation">(</span></span>
+<span class="line">    <span class="punctuation">...</span><span class="parameter">items</span><span class="punctuation">:</span> <span class="class">FlattenableArray</span><span class="punctuation"><</span><span class="class">MediaGalleryComponentItem</span><span class="punctuation">></span></span>
+<span class="line"><span class="punctuation">):</span> <span class="class">MediaGalleryComponent</span></span></code></pre>
+                        </div>
+                    
+                        <div class="method-doc">
+                            <h3><a id="method-last">last</a></h3>
+<pre class="vxppy-code"><code><span class="line"><span class="method">last</span><span class="punctuation">():</span> <span class="class">MediaGalleryComponentItem</span> <span class="punctuation">|</span> <span class="keyword">undefined</span></span></code></pre>
+<p>Gets the last component from the component array</p>
+
+                        </div>
+                    
+                        <div class="method-doc">
+                            <h3><a id="method-pop">pop</a></h3>
+<pre class="vxppy-code"><code><span class="line"><span class="method">pop</span><span class="punctuation">():</span> <span class="class">MediaGalleryComponentItem</span> <span class="punctuation">|</span> <span class="keyword">undefined</span></span></code></pre>
+<p>Removes the component from the end of the component array and returns it</p>
+
+                        </div>
+                    
+                        <div class="method-doc">
+                            <h3><a id="method-push">push</a></h3>
+<pre class="vxppy-code"><code><span class="line"><span class="method">push</span><span class="punctuation">(</span></span>
+<span class="line">    <span class="punctuation">...</span><span class="parameter">parts</span><span class="punctuation">:</span> <span class="class">FlattenableArray</span><span class="punctuation"><</span><span class="class">MediaGalleryComponentItem</span><span class="punctuation">></span></span>
+<span class="line"><span class="punctuation">):</span> <span class="class">MediaGalleryComponent</span></span></code></pre>
+<p>Adds new component to the end of the component array</p>
+
+                        </div>
+                    
+                        <div class="method-doc">
+                            <h3><a id="method-remove">remove</a></h3>
+<pre class="vxppy-code"><code><span class="line"><span class="method">remove</span><span class="punctuation">(</span></span>
+<span class="line">    <span class="punctuation">...</span><span class="parameter">parts</span><span class="punctuation">:</span> <span class="class">MediaGalleryComponentItem</span>[]</span>
+<span class="line"><span class="punctuation">):</span> <span class="class">MediaGalleryComponent</span></span></code></pre>
+<p>Removes components by identity from the component array.</p>
+<p>Each component must be the exact same instance as one contained in the component array.</p>
+
+                        </div>
+                    
+                        <div class="method-doc">
+                            <h3><a id="method-removeAt">removeAt</a></h3>
+<pre class="vxppy-code"><code><span class="line"><span class="method">removeAt</span><span class="punctuation">(</span></span>
+<span class="line">    <span class="parameter">index</span><span class="punctuation">:</span> <span class="keyword">number</span><span class="punctuation">,</span></span>
+<span class="line">    <span class="parameter">count</span><span class="punctuation">:</span> <span class="keyword">number</span></span>
+<span class="line"><span class="punctuation">):</span> <span class="class">MediaGalleryComponentItem</span>[]</span></code></pre>
+<p>Removes components at the index up to count from the component array</p>
+
+                        </div>
+                    
+                        <div class="method-doc">
+                            <h3><a id="method-shift">shift</a></h3>
+<pre class="vxppy-code"><code><span class="line"><span class="method">shift</span><span class="punctuation">():</span> <span class="class">MediaGalleryComponentItem</span> <span class="punctuation">|</span> <span class="keyword">undefined</span></span></code></pre>
+<p>Removes the component from the start of the component array and returns it</p>
+
+                        </div>
+                    
+                        <div class="method-doc">
+                            <h3><a id="method-splice">splice</a></h3>
+<pre class="vxppy-code"><code><span class="line"><span class="method">splice</span><span class="punctuation">(</span></span>
+<span class="line">    <span class="parameter">index</span><span class="punctuation">:</span> <span class="keyword">number</span><span class="punctuation">,</span></span>
+<span class="line">    <span class="parameter">count</span><span class="punctuation">:</span> <span class="keyword">number</span><span class="punctuation">,</span></span>
+<span class="line">    <span class="punctuation">...</span><span class="parameter">parts</span><span class="punctuation">:</span> <span class="class">FlattenableArray</span><span class="punctuation"><</span><span class="class">MediaGalleryComponentItem</span><span class="punctuation">></span></span>
+<span class="line"><span class="punctuation">):</span> <span class="class">MediaGalleryComponentItem</span>[]</span></code></pre>
+<p>Splice the component array. Remove components at index and then optionally add more components at index</p>
+
+                        </div>
+                    
+                        <div class="method-doc">
+                            <h3><a id="method-toJSON">toJSON</a></h3>
+<pre class="vxppy-code"><code><span class="line"><span class="method">toJSON</span><span class="punctuation">():</span> <span class="class">APIMediaGalleryComponent</span></span></code></pre>
+<p>Creates JSON payload for component as used by discord.js</p>
+
+                        </div>
+                    
+                        <div class="method-doc">
+                            <h3><a id="method-toString">toString</a></h3>
+<pre class="vxppy-code"><code><span class="line"><span class="method">toString</span><span class="punctuation">():</span> <span class="keyword">string</span></span></code></pre>
+<p>Returns the stringified version of toJSON()</p>
+
+                        </div>
+                    
+                        <div class="method-doc">
+                            <h3><a id="method-unshift">unshift</a></h3>
+<pre class="vxppy-code"><code><span class="line"><span class="method">unshift</span><span class="punctuation">(</span></span>
+<span class="line">    <span class="punctuation">...</span><span class="parameter">parts</span><span class="punctuation">:</span> <span class="class">FlattenableArray</span><span class="punctuation"><</span><span class="class">MediaGalleryComponentItem</span><span class="punctuation">></span></span>
+<span class="line"><span class="punctuation">):</span> <span class="class">MediaGalleryComponent</span></span></code></pre>
+<p>Adds new component to the start of the component array</p>
+
+                        </div>
+                    
+                </details>
+            </div>
+        </div>
+    </main>
+</body>

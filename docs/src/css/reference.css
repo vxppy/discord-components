@@ -1,0 +1,94 @@
+.docs-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 2em;
+}
+
+.property-doc,
+.method-doc {
+    border-bottom: 1px dashed var(--semi-background);
+}
+
+.overview {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1em;
+    padding: 2em;
+
+    border-radius: 8px;
+    border: 1px solid var(--semi-background);
+}
+
+a {
+    color: #eed49f;
+    text-decoration: none;
+}
+
+.top-level {
+    li::marker {
+        content: '> ';
+    }
+
+    > summary {
+        font-size: 1.5rem;
+    }
+}
+
+.nested-level > summary {
+    font-size: 1.25rem;
+}
+
+.toc::details-content {
+    padding: 1em 2em;
+}
+
+@media screen and (max-width: 768px) {
+    .overview {
+        grid-template-columns: 1fr;
+    }
+}
+
+.vxppy-code {
+    position: relative;
+
+    border-radius: 8px;
+    padding: 12px;
+    outline: 1px solid var(--semi-background);
+
+    .method,
+    .property {
+        color: #8aadf4;
+    }
+
+    .keyword {
+        color: #c6a0f6;
+    }
+
+    .parameter {
+        color: #ed8796;
+    }
+
+    .class,
+    .enum {
+        color: #eed49f;
+    }
+
+    .number,
+    .constant,
+    .boolean {
+        color: #f5a97f;
+    }
+
+    .comment,
+    .punctuation {
+        color: #939ab7;
+    }
+}
+
+.vxppy-code,
+.vxppy-code code {
+    --block-color: #000000;
+    --block-foreground: var(--foreground);
+    background-color: var(--block-color);
+    color: var(--block-foreground);
+}

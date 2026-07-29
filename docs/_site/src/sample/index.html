@@ -1,0 +1,135 @@
+<pre><code class="language-tsx">const MEETING_EXCUSES = [
+    'Sorry, I was on mute',
+    'Can everyone see my screen?',
+    &quot;Let's take this offline&quot;,
+    'Per my last email...',
+    'I have a hard stop in 5 minutes',
+] as const;
+/** Props for the world's most essential component */
+interface MeetingSchedulerProps {
+    defaultDuration?: number;
+    maxAttendees?: number;
+    requiresSnacks?: boolean;
+    onMeetingCreate?: (meeting: Meeting) =&gt; void;
+    onEscapeAttempt?: () =&gt; never;
+}
+/**
+ * MeetingScheduler - Because your calendar wasn't full enough
+ * @description Helps you schedule meetings about scheduling meetings
+ */
+export function MeetingScheduler({
+    defaultDuration = 60,
+    maxAttendees = 100,
+    requiresSnacks = true,
+    onMeetingCreate,
+    onEscapeAttempt,
+}: MeetingSchedulerProps): React.ReactElement {
+    const [meetings, setMeetings] = React.useState&lt;Meeting[]&gt;([]);
+    const [excuseIndex, setExcuseIndex] = React.useState(0);
+    const [isLoading, setIsLoading] = React.useState&lt;boolean&gt;(false);
+    const formRef = React.useRef&lt;HTMLFormElement&gt;(null);
+    const sanityRef = React.useRef&lt;number&gt;(100);
+    // Memoized excuse rotation
+    const currentExcuse = React.useMemo(() =&gt; {
+        return MEETING_EXCUSES[excuseIndex % MEETING_EXCUSES.length];
+    }, [excuseIndex]);
+    // Effect: Gradually decrease sanity
+    React.useEffect(() =&gt; {
+        const interval = setInterval(() =&gt; {
+            sanityRef.current = Math.max(0, sanityRef.current - 1);
+            if (sanityRef.current === 0) {
+                console.warn('Developer sanity depleted');
+            }
+        }, 60000);
+        return () =&gt; clearInterval(interval);
+    }, []);
+    // Callback for creating meetings
+    const handleCreateMeeting = React.useCallback(
+        async (title: string, attendees: string[]) =&gt; {
+            if (!validateMeeting(attendees)) {
+                throw new Error('Invalid attendee count');
+            }
+            setIsLoading(true);
+            try {
+                const newMeeting: Meeting = {
+                    id: crypto.randomUUID(),
+                    title: title || 'Meeting about meetings',
+                    couldHaveBeenAnEmail: true,
+                    attendees,
+                    snacksProvided: requiresSnacks,
+                    actuallyStartsOnTime: 'never', // This causes the error
+                };
+                setMeetings((prev) =&gt; [...prev, newMeeting]);
+                onMeetingCreate?.(newMeeting);
+                setExcuseIndex((i) =&gt; i + 1);
+            } catch (error) {
+                console.error('Failed to create meeting:', error);
+            } finally {
+                setIsLoading(false);
+            }
+        },
+        [requiresSnacks, onMeetingCreate],
+    );
+    // Render the meeting madness
+    return (
+        &lt;div className=&quot;meeting-scheduler p-6 bg-white rounded-lg shadow-xl&quot;&gt;
+            &lt;header className=&quot;mb-4 border-b pb-2&quot;&gt;
+                &lt;h1 className=&quot;text-2xl font-bold text-gray-900&quot;&gt;
+                    📅 Meeting Scheduler Pro™
+                &lt;/h1&gt;
+                &lt;p className=&quot;text-sm text-gray-500 italic&quot;&gt;
+                    &quot;{currentExcuse}&quot;
+                &lt;/p&gt;
+            &lt;/header&gt;
+            ​
+            &lt;form
+                ref={formRef}
+                onSubmit={(e) =&gt; {
+                    e.preventDefault();
+                    handleCreateMeeting('Sync', ['everyone@company.com']);
+                }}
+                className=&quot;space-y-4&quot;
+            &gt;
+                &lt;input
+                    type=&quot;text&quot;
+                    placeholder=&quot;Meeting title (optional, like agendas)&quot;
+                    className=&quot;w-full px-3 py-2 border rounded&quot;
+                    maxLength={255}
+                /&gt;
+                ​
+                &lt;select
+                    defaultValue={defaultDuration}
+                    className=&quot;w-full px-3 py-2 border rounded&quot;
+                &gt;
+                    &lt;option value={30}&gt;30 min (ambitious)&lt;/option&gt;
+                    &lt;option value={60}&gt;1 hour (realistic)&lt;/option&gt;
+                    &lt;option value={120}&gt;2 hours (why?)&lt;/option&gt;
+                    &lt;option value={480}&gt;All day (send help)&lt;/option&gt;
+                &lt;/select&gt;
+                ​
+                &lt;button
+                    type=&quot;submit&quot;
+                    disabled={isLoading}
+                    className=&quot;w-full py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50&quot;
+                &gt;
+                    {isLoading ? 'Syncing calendars...' : 'Schedule Meeting'}
+                &lt;/button&gt;
+            &lt;/form&gt;
+            ​
+            {meetings.length &gt; 0 &amp;&amp; (
+                &lt;ul className=&quot;mt-6 divide-y&quot;&gt;
+                    {meetings.map((meeting) =&gt; (
+                        &lt;li key={meeting.id} className=&quot;py-3&quot;&gt;
+                            &lt;span className=&quot;font-medium&quot;&gt;{meeting.title}&lt;/span&gt;
+                            &lt;span className=&quot;text-gray-400 ml-2&quot;&gt;
+                                ({meeting.attendees.length} victims)
+                            &lt;/span&gt;
+                        &lt;/li&gt;
+                    ))}
+                &lt;/ul&gt;
+            )}
+        &lt;/div&gt;
+    );
+}
+export default MeetingScheduler;
+</code></pre>

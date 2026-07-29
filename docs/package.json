@@ -1,0 +1,22 @@
+{
+    "name": "docs",
+    "version": "1.0.0",
+    "description": "",
+    "scripts": {
+        "dev": "npx @11ty/eleventy --config=eleventy.config.ts --serve"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "type": "module",
+    "devDependencies": {
+        "@11ty/eleventy": "^3.1.6",
+        "@shikijs/markdown-it": "^4.3.1",
+        "@types/markdown-it": "^14.1.2",
+        "liquidjs": "^10.27.2",
+        "markdown-it": "^14.3.0"
+    },
+    "dependencies": {
+        "11ty.ts": "^0.0.7"
+    }
+}

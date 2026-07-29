@@ -91,11 +91,6 @@ const entityNameToString = (type: ts.EntityName): string => {
     }
 };
 
-const unaryExpresionToHTML = (expr: ts.UnaryExpression) => {
-    switch (expr.kind) {
-    }
-};
-
 const expressionToHTML = (
     expr:
         | ts.LiteralExpression
@@ -125,7 +120,7 @@ const expressionToHTML = (
             switch (prefix.operator) {
                 case ts.SyntaxKind.MinusToken:
                     return (
-                        '-' +
+                        operator('-') +
                         expressionToHTML(prefix.operand as ts.LiteralExpression)
                     );
                 default:
@@ -287,7 +282,7 @@ const mapProperty = (prop: PropertyDoc) => {
 
     const body = normalize([
         prepend,
-        `## <a id="property-${prop.name}">${prop.name}</a>`,
+        `### <a id="property-${prop.name}">${prop.name}</a>`,
         makePropertyHTML(prop),
         prop.docs,
         postpend,
@@ -308,7 +303,7 @@ const mapSignature = (name: string, signature: SignatureDoc) => {
 
 const mapMethod = (method: MethodDoc) => {
     const body = normalize([
-        `## <a id="method-${method.name}">${method.name}</a>\n`,
+        `### <a id="method-${method.name}">${method.name}</a>\n`,
         method.signatures
             .map((signature) => mapSignature(method.name, signature))
             .join('\n'),
