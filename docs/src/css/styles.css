@@ -75,6 +75,11 @@ body {
     outline: 1px solid var(--semi-background);
 }
 
+a {
+    color: #eed49f;
+    text-decoration: none;
+}
+
 pre,
 code {
     font-family: 'JetBrains Mono', Consolas, monospace;
