@@ -41,7 +41,7 @@ export default defineConfig(async (config) => {
     config.addFilter('markdown', (value: string) => markdownIt.render(value));
 
     return {
-        pathPrefix: 'https://vxppy.github.io/discord-components',
+        pathPrefix: '/discord-components/',
         dir: {
             input: 'src',
             output: '_site',
