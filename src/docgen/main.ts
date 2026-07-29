@@ -18,60 +18,7 @@ const program = ts.createProgram({
 });
 
 const checker = program.getTypeChecker();
-const outFile = path.join(process.cwd(), 'docs/src/test.md');
-
-// const file = openSync(outFile, 'w');
-
-// const emitToFile = (content: string) => {
-//     writeFileSync(file, content);
-// };
-
-// const startAll = () => {
-//     emitToFile(
-//         '---\nlayout: reference\ntitle: ButtonComponent\n---\n\n# Symbols\n\n',
-//     );
-// };
-
-// const startProperties = () => {
-//     emitToFile('# Properties\n\n');
-// };
-
-// const emitTable = (properties: string[], methods: string[]) => {
-//     emitToFile(
-//         `<div class="overview">
-//     <details open>
-//         <summary>Properties</summary>
-//             ${properties
-//                 .map(
-//                     (i) =>
-//                         `<li><a href="#property-${i}"><code>${i}</code></a></li>`,
-//                 )
-//                 .join('\n')}
-//     </details>
-//     <details open>
-//         <summary>Methods</summary>
-//         ${methods.map((i) => `<li><a href="#method-${i}"><code>${i}</code></a></li>`).join('\n')}
-//     </details>
-// </div>\n\n`,
-//     );
-// };
-
-// const emitPropertyDocs = (name: string, returnType: string, docs: string) => {
-//     emitToFile(
-//         `##  <a id="property-${name}">${name}</a>\n\n\`\`\`ts\nget ${name}(): ${returnType}\n\`\`\`\n\n${docs}\n\n<hr>\n\n`,
-//     );
-// };
-
-// const startMethods = () => {
-//     emitToFile('# Methods\n\n');
-// };
-
-// const emitMethodDocs = (name: string, methods: string[], docs: string) => {
-//     emitToFile(
-//         `## <a id="method-${name}">${name}</a>\n\n\`\`\`ts\n${methods.map((i) => `${name} ${i}`).join('\n')}\n\`\`\`\n\n${docs}\n\n<hr>\n\n`,
-//     );
-// };
-//
+const BASE_PATH = path.join(process.cwd(), 'docs/src/components');
 
 const processClass = (node: ts.ClassDeclaration) => {
     const symbol = checker.getSymbolAtLocation(node.name!)!;
@@ -115,7 +62,11 @@ const processClass = (node: ts.ClassDeclaration) => {
 
         fileDoc.properties.push({
             name: property.name,
-            type: checker.typeToString(type),
+            type: checker.typeToTypeNode(
+                type,
+                undefined,
+                ts.NodeBuilderFlags.None,
+            )!,
             docs,
             tags: property.getJsDocTags(),
         });
@@ -134,6 +85,7 @@ const processClass = (node: ts.ClassDeclaration) => {
 
         for (const signature of signatureType) {
             const returnType = checker.getReturnTypeOfSignature(signature);
+
             const docs = ts.displayPartsToString(
                 signature.getDocumentationComment(checker),
             );
@@ -141,7 +93,8 @@ const processClass = (node: ts.ClassDeclaration) => {
             const parameterDocs: ParameterDocs[] = [];
 
             for (const parameter of signature.getParameters()) {
-                const declaration = parameter.valueDeclaration!;
+                const declaration =
+                    parameter.valueDeclaration! as ts.ParameterDeclaration;
 
                 const type = checker.getTypeOfSymbolAtLocation(
                     parameter,
@@ -154,8 +107,14 @@ const processClass = (node: ts.ClassDeclaration) => {
 
                 parameterDocs.push({
                     name: parameter.getName(),
-                    type: checker.typeToString(type),
+                    type: checker.typeToTypeNode(
+                        type,
+                        undefined,
+                        ts.NodeBuilderFlags.None,
+                    )!,
                     docs,
+                    initializer: declaration.initializer,
+                    spread: Boolean(declaration.dotDotDotToken),
                 });
             }
 
@@ -164,14 +123,18 @@ const processClass = (node: ts.ClassDeclaration) => {
                 docs,
                 parameters: parameterDocs,
                 tags: signature.getJsDocTags(),
-                returnType: checker.typeToString(returnType),
+                returnType: checker.typeToTypeNode(
+                    returnType,
+                    undefined,
+                    ts.NodeBuilderFlags.None,
+                )!,
             });
         }
 
         fileDoc.methods.push(methodDocs);
     }
 
-    writeFileSync(outFile, fileDocToString(fileDoc));
+    return fileDocToString(fileDoc);
 };
 
 const processFile = (sourceFile: ts.SourceFile) => {
@@ -179,7 +142,12 @@ const processFile = (sourceFile: ts.SourceFile) => {
         if (!ts.isClassDeclaration(statement)) continue;
         if (!statement.name?.text.endsWith('Component')) continue;
 
-        processClass(statement);
+        const content = processClass(statement);
+
+        writeFileSync(
+            path.join(BASE_PATH, `${path.parse(sourceFile.fileName).name}.md`),
+            content,
+        );
     }
 };
 
@@ -189,7 +157,6 @@ for (const sourceFile of program
     if (sourceFile.fileName.includes('base')) continue;
 
     processFile(sourceFile);
-    break;
 }
 
 // closeSync(file);
