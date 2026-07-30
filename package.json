@@ -38,11 +38,11 @@
         "LICENSE"
     ],
     "devDependencies": {
+        "@types/node": "^26.1.2",
         "discord.js": "^14.27.0",
         "typescript": "^6.0.3"
     },
     "dependencies": {
-        "@types/node": "^26.1.1",
         "discord-api-types": "^0.38.50"
     }
 }
