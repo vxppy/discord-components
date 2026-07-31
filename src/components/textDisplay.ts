@@ -52,7 +52,7 @@ const formatContent = (content: string, data: RichTextFormat): string => {
     }
 
     if (data.format & RichTextOptions.Codeblock) {
-        content = `\`\`\`${data.language ? `${data.language}\n` : ''}${content}\`\`\``;
+        content = `\`\`\`${data.language ?? ''}\n${content}\n\`\`\``;
     }
 
     if (data.format & RichTextOptions.Spoiler) {
