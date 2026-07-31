@@ -101,7 +101,7 @@ const partsToNode = (
 
     if (formatted.length == 1 && typeof formatted[0] == 'string') {
         return {
-            content: formatted[0].trim(),
+            content: formatted[0],
         };
     }
 
