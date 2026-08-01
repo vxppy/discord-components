@@ -8,7 +8,6 @@ class UserSelectComponent
 
 ## Builder
 
-```ts
-builder()
-// wow
-```
+Creates a UserSelectComponent
+
+<pre class="vxppy-code"><code><span class="line"><span class="method">userSelect</span><span class="punctuation">():</span> <span class="class">UserSelectComponent</span></span></code></pre>

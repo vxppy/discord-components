@@ -8,7 +8,6 @@ class ChannelSelectComponent
 
 ## Builder
 
-```ts
-builder()
-// wow
-```
+Creates a ChannelSelectComponent
+
+<pre class="vxppy-code"><code><span class="line"><span class="method">channelSelect</span><span class="punctuation">():</span> <span class="class">ChannelSelectComponent</span></span></code></pre>

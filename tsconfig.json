@@ -21,9 +21,6 @@
         "moduleDetection": "force",
         "skipLibCheck": true,
     },
-    "watchOptions": {
-        "excludeDirectories": ["docs", "_site"],
-    },
     "include": ["src/**/*.ts"],
-    "exclude": ["src/tests/**", "src/docgen/**"],
+    "exclude": ["src/tests/**", "src/docgen/**", "docs/**"],
 }

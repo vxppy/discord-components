@@ -8,7 +8,8 @@ class TextDisplayComponent
 
 ## Builder
 
-```ts
-builder()
-// wow
-```
+Create a TextDisplayComponent
+
+<pre class="vxppy-code"><code><span class="line"><span class="method">text</span><span class="punctuation">(</span></span>
+<span class="line">    <span class="punctuation">...</span><span class="parameter">parts</span><span class="punctuation">:</span> <span class="class">FlattenableArray</span><span class="punctuation"><</span><span class="class">TextNodeResolveable</span><span class="punctuation">></span></span>
+<span class="line"><span class="punctuation">):</span> <span class="class">TextDisplayComponent</span></span></code></pre>

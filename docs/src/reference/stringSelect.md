@@ -8,7 +8,6 @@ class StringSelectComponent
 
 ## Builder
 
-```ts
-builder()
-// wow
-```
+<pre class="vxppy-code"><code><span class="line"><span class="method">stringSelect</span><span class="punctuation">(</span></span>
+<span class="line">    <span class="punctuation">...</span><span class="parameter">options</span><span class="punctuation">:</span> <span class="class">FlattenableArray</span><span class="punctuation"><</span><span class="class">StringSelectOption</span><span class="punctuation">></span></span>
+<span class="line"><span class="punctuation">):</span> <span class="class">StringSelectComponent</span></span></code></pre>

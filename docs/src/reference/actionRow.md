@@ -8,7 +8,8 @@ class ActionRowComponent
 
 ## Builder
 
-```ts
-builder()
-// wow
-```
+Creates an ActionRowComponent
+
+<pre class="vxppy-code"><code><span class="line"><span class="method">actionRow</span><span class="punctuation">(</span></span>
+<span class="line">    <span class="punctuation">...</span><span class="parameter">components</span><span class="punctuation">:</span> <span class="class">FlattenableArray</span><span class="punctuation"><</span><span class="class">ActionRowChild</span><span class="punctuation">></span></span>
+<span class="line"><span class="punctuation">):</span> <span class="class">ActionRowComponent</span></span></code></pre>

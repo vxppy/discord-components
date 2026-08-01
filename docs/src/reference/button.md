@@ -8,7 +8,4 @@ class ButtonComponent
 
 ## Builder
 
-```ts
-builder()
-// wow
-```
+<pre class="vxppy-code"><code><span class="line"><span class="method">button</span><span class="punctuation">():</span> <span class="class">ButtonComponent</span></span></code></pre>

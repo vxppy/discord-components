@@ -8,7 +8,8 @@ class ContainerComponent
 
 ## Builder
 
-```ts
-builder()
-// wow
-```
+Creates an ContainerComponent
+
+<pre class="vxppy-code"><code><span class="line"><span class="method">container</span><span class="punctuation">(</span></span>
+<span class="line">    <span class="punctuation">...</span><span class="parameter">components</span><span class="punctuation">:</span> <span class="class">FlattenableArray</span><span class="punctuation"><</span><span class="class">ContainerChild</span><span class="punctuation">></span></span>
+<span class="line"><span class="punctuation">):</span> <span class="class">ContainerComponent</span></span></code></pre>

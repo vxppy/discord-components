@@ -8,7 +8,6 @@ class SeparatorComponent
 
 ## Builder
 
-```ts
-builder()
-// wow
-```
+Creates SeparatorComponent
+
+<pre class="vxppy-code"><code><span class="line"><span class="method">separator</span><span class="punctuation">():</span> <span class="class">SeparatorComponent</span></span></code></pre>

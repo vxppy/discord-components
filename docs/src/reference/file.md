@@ -8,7 +8,17 @@ class FileComponent
 
 ## Builder
 
+Creates a new FileComponent
+
+The file can be either:
+- A filename, such as `my_image.png`
+- An attachment URL in the format `attachment://<filename>`
+
+<pre class="vxppy-code"><code><span class="line"><span class="method">fileItem</span><span class="punctuation">(</span></span>
+<span class="line">    <span class="parameter">file</span><span class="punctuation">:</span> <span class="keyword">string</span></span>
+<span class="line"><span class="punctuation">):</span> <span class="class">FileComponent</span></span></code></pre>
+
+`@example` - 
 ```ts
-builder()
-// wow
+fileComponent.file('attachment://my_image.png')
 ```

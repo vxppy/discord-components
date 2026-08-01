@@ -1,7 +1,15 @@
 import ts from 'typescript';
 import path from 'path';
 import { writeFileSync } from 'fs';
-import { FileDoc, fileDocToString, MethodDoc, ParameterDocs } from './filedoc';
+
+import {
+    ClassDoc,
+    classDocToString,
+    FunctionDoc,
+    MethodDoc,
+    ParameterDocs,
+    SignatureDoc,
+} from './filedoc';
 
 const configFile = ts.readConfigFile('tsconfig.json', ts.sys.readFile);
 
@@ -18,10 +26,63 @@ const program = ts.createProgram({
 });
 
 const checker = program.getTypeChecker();
-const BASE_PATH = path.join(process.cwd(), 'docs/src/components');
+const BASE_PATH = path.join(process.cwd(), 'docs/src');
 
-const processClass = (node: ts.ClassDeclaration) => {
-    const symbol = checker.getSymbolAtLocation(node.name!)!;
+const processSignature = (signature: ts.Signature): SignatureDoc => {
+    const returnType = checker.getReturnTypeOfSignature(signature);
+
+    const docs = ts.displayPartsToString(
+        signature.getDocumentationComment(checker),
+    );
+
+    const parameterDocs: ParameterDocs[] = [];
+
+    for (const parameter of signature.getParameters()) {
+        const declaration =
+            parameter.valueDeclaration! as ts.ParameterDeclaration;
+
+        const type = checker.getTypeOfSymbolAtLocation(parameter, declaration);
+
+        const docs = ts.displayPartsToString(
+            parameter.getDocumentationComment(checker),
+        );
+
+        parameterDocs.push({
+            name: parameter.getName(),
+            type: checker.typeToTypeNode(
+                type,
+                undefined,
+                ts.NodeBuilderFlags.None,
+            )!,
+            docs,
+            initializer: declaration.initializer,
+            spread: Boolean(declaration.dotDotDotToken),
+        });
+    }
+
+    return {
+        signature: checker.signatureToString(signature),
+        docs,
+        parameters: parameterDocs,
+        tags: signature.getJsDocTags(),
+        returnType: checker.typeToTypeNode(
+            returnType,
+            undefined,
+            ts.NodeBuilderFlags.None,
+        )!,
+    };
+};
+
+const processFactory = (factory: ts.FunctionDeclaration): FunctionDoc => ({
+    name: factory.name!.text,
+    signature: processSignature(checker.getSignatureFromDeclaration(factory)!),
+});
+
+const processClass = (
+    klass: ts.ClassDeclaration,
+    factory: ts.FunctionDeclaration,
+) => {
+    const symbol = checker.getSymbolAtLocation(klass.name!)!;
     const classType = checker.getDeclaredTypeOfSymbol(symbol);
 
     const properties: ts.Symbol[] = [];
@@ -43,8 +104,9 @@ const processClass = (node: ts.ClassDeclaration) => {
     properties.sort((a, b) => a.name.localeCompare(b.name));
     methods.sort((a, b) => a.name.localeCompare(b.name));
 
-    const fileDoc: FileDoc = {
+    const classDoc: ClassDoc = {
         name: checker.symbolToString(symbol),
+        factory: processFactory(factory),
         propertyToc: properties.map((i) => i.name),
         methodToc: methods.map((i) => i.name),
         properties: [],
@@ -60,7 +122,7 @@ const processClass = (node: ts.ClassDeclaration) => {
 
         const type = checker.getTypeOfSymbolAtLocation(property, declaration);
 
-        fileDoc.properties.push({
+        classDoc.properties.push({
             name: property.name,
             type: checker.typeToTypeNode(
                 type,
@@ -131,24 +193,69 @@ const processClass = (node: ts.ClassDeclaration) => {
             });
         }
 
-        fileDoc.methods.push(methodDocs);
+        classDoc.methods.push(methodDocs);
     }
 
-    return fileDocToString(fileDoc);
+    return classDocToString(classDoc);
 };
 
+interface SingleClassMap {
+    klass: ts.ClassDeclaration;
+    factory: ts.FunctionDeclaration;
+    isMainOfFile?: boolean;
+}
+
+const mapping = new Map<string, SingleClassMap[]>();
+
 const processFile = (sourceFile: ts.SourceFile) => {
+    const methods: ts.FunctionDeclaration[] = [];
+    const klasses: { klass: ts.ClassDeclaration; isMainOfFile?: boolean }[] =
+        [];
+
     for (const statement of sourceFile.statements) {
+        if (
+            ts.isFunctionDeclaration(statement) &&
+            ts.canHaveModifiers(statement)
+        ) {
+            if (
+                !ts
+                    .getModifiers(statement)
+                    ?.some((m) => m.kind == ts.SyntaxKind.ExportKeyword)
+            )
+                continue;
+
+            methods.push(statement);
+        }
+
         if (!ts.isClassDeclaration(statement)) continue;
-        if (!statement.name?.text.endsWith('Component')) continue;
 
-        const content = processClass(statement);
-
-        writeFileSync(
-            path.join(BASE_PATH, `${path.parse(sourceFile.fileName).name}.md`),
-            content,
-        );
+        klasses.push({
+            klass: statement,
+            isMainOfFile: statement.name?.text.endsWith('Component'),
+        });
     }
+
+    const fileMapping: SingleClassMap[] = [];
+
+    for (const { klass, isMainOfFile } of klasses) {
+        const classType = checker.getTypeAtLocation(klass.name!);
+
+        for (const method of methods) {
+            const signature = checker.getSignatureFromDeclaration(method);
+            const returnType = checker.getReturnTypeOfSignature(signature!);
+
+            if (returnType.symbol == classType.symbol) {
+                fileMapping.push({
+                    klass,
+                    factory: method,
+                    isMainOfFile,
+                });
+                break;
+            }
+        }
+    }
+
+    mapping.set(path.parse(sourceFile.fileName).name, fileMapping);
 };
 
 for (const sourceFile of program
@@ -159,4 +266,20 @@ for (const sourceFile of program
     processFile(sourceFile);
 }
 
-// closeSync(file);
+for (const [file, classMappings] of mapping) {
+    for (const { klass, factory, isMainOfFile } of classMappings) {
+        const content = processClass(klass, factory);
+
+        if (isMainOfFile) {
+            writeFileSync(
+                path.join(BASE_PATH, 'reference', `${file}.md`),
+                content,
+            );
+        } else {
+            writeFileSync(
+                path.join(BASE_PATH, 'reference', `${factory.name!.text}.md`),
+                content,
+            );
+        }
+    }
+}

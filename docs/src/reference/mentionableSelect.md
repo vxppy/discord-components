@@ -8,7 +8,6 @@ class MentionableSelectComponent
 
 ## Builder
 
-```ts
-builder()
-// wow
-```
+Creates a MentionableSelectComponent
+
+<pre class="vxppy-code"><code><span class="line"><span class="method">mentionableSelect</span><span class="punctuation">():</span> <span class="class">MentionableSelectComponent</span></span></code></pre>

@@ -8,7 +8,6 @@ class RoleSelectComponent
 
 ## Builder
 
-```ts
-builder()
-// wow
-```
+Creates a RoleSelectComponent
+
+<pre class="vxppy-code"><code><span class="line"><span class="method">roleSelect</span><span class="punctuation">():</span> <span class="class">RoleSelectComponent</span></span></code></pre>

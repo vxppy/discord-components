@@ -44,8 +44,14 @@ export interface MethodDoc {
     signatures: SignatureDoc[];
 }
 
-export interface FileDoc {
+export interface FunctionDoc {
     name: string;
+    signature: SignatureDoc;
+}
+
+export interface ClassDoc {
+    name: string;
+    factory: FunctionDoc;
     propertyToc: string[];
     methodToc: string[];
     properties: PropertyDoc[];
@@ -71,10 +77,7 @@ class @{CLASS_NAME}@
 
 ## Builder
 
-\`\`\`ts
 @{BUILDER_STRING}@
-// wow
-\`\`\`
 `;
 
 const KLASS_NAME = 'vxppy-code';
@@ -312,22 +315,32 @@ const mapMethod = (method: MethodDoc) => {
     return body;
 };
 
-export function fileDocToString(fileDoc: FileDoc) {
+const mapFunction = (fn: FunctionDoc) => {
+    const { prepend, postpend } = resolveTags(fn.signature.tags);
+    return normalize([
+        fn.signature.docs,
+        prepend,
+        makeFunctionHTML(fn.name, fn.signature),
+        postpend,
+    ]).join('\n\n');
+};
+
+export function classDocToString(klassDoc: ClassDoc) {
     return (
         template
             .replace(
                 '@{TEMPLATE}@',
                 JSON.stringify({
                     layout: 'reference',
-                    component: fileDoc.name,
-                    property_names: fileDoc.propertyToc,
-                    method_names: fileDoc.methodToc,
-                    properties: fileDoc.properties.map(mapProperty),
-                    methods: fileDoc.methods.map(mapMethod),
+                    component: klassDoc.name,
+                    property_names: klassDoc.propertyToc,
+                    method_names: klassDoc.methodToc,
+                    properties: klassDoc.properties.map(mapProperty),
+                    methods: klassDoc.methods.map(mapMethod),
                 } satisfies DocJSON),
             )
-            .replace('@{CLASS_NAME}@', fileDoc.name)
+            .replace('@{CLASS_NAME}@', klassDoc.name)
             // @ts-ignore
-            .replace('@{BUILDER_STRING}@', fileDoc.builder ?? 'builder()')
+            .replace('@{BUILDER_STRING}@', mapFunction(klassDoc.factory))
     );
 }
