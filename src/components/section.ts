@@ -197,7 +197,7 @@ class SectionComponent
 }
 
 /**
- * Creates an SectionComponent
+ * Creates a SectionComponent
  * @param components The components to add to the section
  */
 export function section(...components: FlattenableArray<SectionChild>) {

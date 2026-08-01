@@ -82,7 +82,7 @@ const cache: SeparatorComponent[] = [
 ];
 
 /**
- * Creates SeparatorComponent
+ * Creates a SeparatorComponent
  */
 export function separator() {
     return cache[0]!;

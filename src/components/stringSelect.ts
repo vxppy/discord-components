@@ -110,10 +110,6 @@ class SelectOption implements HasDescription, HasLabel {
     }
 }
 
-export function option(data: SelectOptionData) {
-    return new SelectOption(data);
-}
-
 interface StringSelectData extends BaseInteractiveComponentData {
     options: SelectOption[];
     placeholder?: string;
@@ -317,6 +313,18 @@ class StringSelectComponent
     }
 }
 
+/**
+ * Creates a SelectOption for StringSelectComponent
+ * @param data The data of the string select option
+ */
+export function option(data: SelectOptionData) {
+    return new SelectOption(data);
+}
+
+/**
+ * Creates a StringSelectComponent
+ * @param options The options of the string select menu
+ */
 export function stringSelect(...options: FlattenableArray<StringSelectOption>) {
     return new StringSelectComponent({
         options: normalizeOptions(options),
