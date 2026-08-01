@@ -226,10 +226,19 @@ const makeParameterToHTML = (param: ParameterDocs, isLast: boolean = false) => {
     ]);
 };
 
-const makeFunctionHTML = (name: string, sig: SignatureDoc) => {
+const makeFunctionHTML = (
+    name: string,
+    sig: SignatureDoc,
+    isFactory: boolean = false,
+) => {
+    const prefix = isFactory
+        ? [keyword('export'), ' ', keyword('function'), ' ']
+        : [];
+
     if (!sig.parameters.length) {
         return block(KLASS_NAME, [
             line([
+                ...prefix,
                 method(name),
                 punctuation('():'),
                 ' ',
@@ -239,7 +248,7 @@ const makeFunctionHTML = (name: string, sig: SignatureDoc) => {
     }
 
     return block(KLASS_NAME, [
-        line([method(name), punctuation('(')]),
+        line([...prefix, method(name), punctuation('(')]),
         ...sig.parameters.map((i, index) =>
             makeParameterToHTML(i, index == sig.parameters.length - 1),
         ),
@@ -320,7 +329,7 @@ const mapFunction = (fn: FunctionDoc) => {
     return normalize([
         fn.signature.docs,
         prepend,
-        makeFunctionHTML(fn.name, fn.signature),
+        makeFunctionHTML(fn.name, fn.signature, true),
         postpend,
     ]).join('\n\n');
 };

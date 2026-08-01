@@ -10,4 +10,4 @@ class ChannelSelectComponent
 
 Creates a ChannelSelectComponent
 
-<pre class="vxppy-code"><code><span class="line"><span class="method">channelSelect</span><span class="punctuation">():</span> <span class="class">ChannelSelectComponent</span></span></code></pre>
+<pre class="vxppy-code"><code><span class="line"><span class="keyword">export</span> <span class="keyword">function</span> <span class="method">channelSelect</span><span class="punctuation">():</span> <span class="class">ChannelSelectComponent</span></span></code></pre>

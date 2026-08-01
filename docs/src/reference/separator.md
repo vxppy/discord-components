@@ -10,4 +10,4 @@ class SeparatorComponent
 
 Creates SeparatorComponent
 
-<pre class="vxppy-code"><code><span class="line"><span class="method">separator</span><span class="punctuation">():</span> <span class="class">SeparatorComponent</span></span></code></pre>
+<pre class="vxppy-code"><code><span class="line"><span class="keyword">export</span> <span class="keyword">function</span> <span class="method">separator</span><span class="punctuation">():</span> <span class="class">SeparatorComponent</span></span></code></pre>

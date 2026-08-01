@@ -10,6 +10,6 @@ class MediaGalleryComponent
 
 Creates a MediaGalleryComponent
 
-<pre class="vxppy-code"><code><span class="line"><span class="method">mediaGallery</span><span class="punctuation">(</span></span>
+<pre class="vxppy-code"><code><span class="line"><span class="keyword">export</span> <span class="keyword">function</span> <span class="method">mediaGallery</span><span class="punctuation">(</span></span>
 <span class="line">    <span class="punctuation">...</span><span class="parameter">items</span><span class="punctuation">:</span> <span class="class">FlattenableArray</span><span class="punctuation"><</span><span class="class">MediaGalleryComponentItem</span><span class="punctuation">></span></span>
 <span class="line"><span class="punctuation">):</span> <span class="class">MediaGalleryComponent</span></span></code></pre>

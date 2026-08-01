@@ -13,7 +13,7 @@ The value can be either:
 - A url to image resource
 - An attachment URL in the format `attachment://<filename>`
 
-<pre class="vxppy-code"><code><span class="line"><span class="method">thumbnail</span><span class="punctuation">(</span></span>
+<pre class="vxppy-code"><code><span class="line"><span class="keyword">export</span> <span class="keyword">function</span> <span class="method">thumbnail</span><span class="punctuation">(</span></span>
 <span class="line">    <span class="parameter">url</span><span class="punctuation">:</span> <span class="keyword">string</span></span>
 <span class="line"><span class="punctuation">):</span> <span class="class">ThumbnailComponent</span></span></code></pre>
 

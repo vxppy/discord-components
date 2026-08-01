@@ -10,4 +10,4 @@ class RoleSelectComponent
 
 Creates a RoleSelectComponent
 
-<pre class="vxppy-code"><code><span class="line"><span class="method">roleSelect</span><span class="punctuation">():</span> <span class="class">RoleSelectComponent</span></span></code></pre>
+<pre class="vxppy-code"><code><span class="line"><span class="keyword">export</span> <span class="keyword">function</span> <span class="method">roleSelect</span><span class="punctuation">():</span> <span class="class">RoleSelectComponent</span></span></code></pre>

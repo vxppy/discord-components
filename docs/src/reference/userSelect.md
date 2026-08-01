@@ -10,4 +10,4 @@ class UserSelectComponent
 
 Creates a UserSelectComponent
 
-<pre class="vxppy-code"><code><span class="line"><span class="method">userSelect</span><span class="punctuation">():</span> <span class="class">UserSelectComponent</span></span></code></pre>
+<pre class="vxppy-code"><code><span class="line"><span class="keyword">export</span> <span class="keyword">function</span> <span class="method">userSelect</span><span class="punctuation">():</span> <span class="class">UserSelectComponent</span></span></code></pre>

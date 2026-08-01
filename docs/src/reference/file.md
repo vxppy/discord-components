@@ -14,7 +14,7 @@ The file can be either:
 - A filename, such as `my_image.png`
 - An attachment URL in the format `attachment://<filename>`
 
-<pre class="vxppy-code"><code><span class="line"><span class="method">fileItem</span><span class="punctuation">(</span></span>
+<pre class="vxppy-code"><code><span class="line"><span class="keyword">export</span> <span class="keyword">function</span> <span class="method">fileItem</span><span class="punctuation">(</span></span>
 <span class="line">    <span class="parameter">file</span><span class="punctuation">:</span> <span class="keyword">string</span></span>
 <span class="line"><span class="punctuation">):</span> <span class="class">FileComponent</span></span></code></pre>
 

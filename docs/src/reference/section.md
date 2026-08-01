@@ -10,6 +10,6 @@ class SectionComponent
 
 Creates an SectionComponent
 
-<pre class="vxppy-code"><code><span class="line"><span class="method">section</span><span class="punctuation">(</span></span>
+<pre class="vxppy-code"><code><span class="line"><span class="keyword">export</span> <span class="keyword">function</span> <span class="method">section</span><span class="punctuation">(</span></span>
 <span class="line">    <span class="punctuation">...</span><span class="parameter">components</span><span class="punctuation">:</span> <span class="class">FlattenableArray</span><span class="punctuation"><</span><span class="class">TextDisplayComponent</span><span class="punctuation">></span></span>
 <span class="line"><span class="punctuation">):</span> <span class="class">SectionComponent</span></span></code></pre>

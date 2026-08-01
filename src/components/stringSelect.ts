@@ -13,7 +13,7 @@ import resolveEmoji from '../utils/resolveEmoji.js';
 import type { APIStringSelectComponent } from 'discord-api-types/v10';
 import { ComponentType } from 'discord-api-types/v9';
 
-interface SelectOptionData {
+export interface SelectOptionData {
     label: string;
     value: string;
     description?: string;
@@ -74,7 +74,7 @@ class SelectOption {
         return new SelectOption({ ...this.data });
     }
 
-    toJSON() {
+    toJSON(): SelectOptionData {
         return {
             ...this.data,
         };

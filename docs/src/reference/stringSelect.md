@@ -8,6 +8,6 @@ class StringSelectComponent
 
 ## Builder
 
-<pre class="vxppy-code"><code><span class="line"><span class="method">stringSelect</span><span class="punctuation">(</span></span>
+<pre class="vxppy-code"><code><span class="line"><span class="keyword">export</span> <span class="keyword">function</span> <span class="method">stringSelect</span><span class="punctuation">(</span></span>
 <span class="line">    <span class="punctuation">...</span><span class="parameter">options</span><span class="punctuation">:</span> <span class="class">FlattenableArray</span><span class="punctuation"><</span><span class="class">StringSelectOption</span><span class="punctuation">></span></span>
 <span class="line"><span class="punctuation">):</span> <span class="class">StringSelectComponent</span></span></code></pre>
