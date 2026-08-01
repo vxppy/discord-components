@@ -145,9 +145,25 @@ export interface HasDescription {
      *
      * Pass `undefined` to remove the description.
      *
-     * @param description The description text, or `undefined` to remove it.
+     * @param description The description text
      */
     description(description?: string): this;
+}
+
+export interface HasLabel {
+    /**
+     * the label of the component.
+     */
+    get Label(): string | undefined;
+
+    /**
+     * Sets the description text of the component.
+     *
+     * Pass `undefined` to remove the description.
+     *
+     * @param label The label text
+     */
+    label(label?: string): this;
 }
 
 export interface HasUrl {

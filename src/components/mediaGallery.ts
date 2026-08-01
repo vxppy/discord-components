@@ -54,20 +54,26 @@ class MediaGalleryComponentItem implements CanSpoiler, HasDescription, HasUrl {
         return this;
     }
 
-    description(value: string) {
-        this.data.description = value;
+    description(description: string) {
+        this.data.description = description;
         return this;
     }
 
-    spoiler(state: boolean = true) {
-        this.data.spoiler = state;
+    spoiler(spoiler: boolean = true) {
+        this.data.spoiler = spoiler;
         return this;
     }
 
+    /**
+     * Clones the current gallery item
+     */
     clone(): MediaGalleryComponentItem {
         return new MediaGalleryComponentItem({ ...this.data });
     }
 
+    /**
+     * Makes the Discord API Payload from galleryItem
+     */
     toJSON(): APIMediaGalleryItem {
         requireField(this.data.url, 'media.url', {
             builder: 'galleryItem',

@@ -1,6 +1,8 @@
 import {
     BaseInteractiveComponent,
     type BaseInteractiveComponentData,
+    type HasDescription,
+    type HasLabel,
     type PartialEmoji,
     type PartList,
     type SelectMenu,
@@ -21,13 +23,16 @@ export interface SelectOptionData {
     default?: boolean;
 }
 
-class SelectOption {
+class SelectOption implements HasDescription, HasLabel {
     constructor(private data: SelectOptionData) {}
 
     get Label() {
         return this.data.label;
     }
 
+    /**
+     * The value of the select option
+     */
     get Value() {
         return this.data.value;
     }
@@ -36,44 +41,68 @@ class SelectOption {
         return this.data.description;
     }
 
+    /**
+     * The emoji of the select option
+     */
     get Emoji() {
         return this.data.emoji;
     }
 
+    /**
+     * Whether the option is marked as default
+     */
     get IsDefault() {
         return this.data.default;
     }
 
-    label(name: string) {
-        this.data.label = name;
+    label(label: string) {
+        this.data.label = label;
         return this;
     }
 
+    /**
+     * Sets the label of the string option
+     * @param value The label text of the option
+     */
     value(value: string) {
         this.data.value = value;
         return this;
     }
 
-    description(value: string) {
-        this.data.description = value;
+    description(description: string) {
+        this.data.description = description;
         return this;
     }
 
-    emoji(value: string | PartialEmoji) {
+    /**
+     * Sets the label of the string option
+     * @param emoji The label text of the option
+     */
+    emoji(emoji: string | PartialEmoji) {
         this.data.emoji =
-            typeof value == 'string' ? resolveEmoji(value) : value;
+            typeof emoji == 'string' ? resolveEmoji(emoji) : emoji;
         return this;
     }
 
+    /**
+     * Sets whether the component is default or not
+     * @param state The disabled state of the option
+     */
     default(state: boolean = true) {
         this.data.default = state;
         return this;
     }
 
+    /**
+     * Clones the current option
+     */
     clone() {
         return new SelectOption({ ...this.data });
     }
 
+    /**
+     * Makes the Discord API Payload from option
+     */
     toJSON(): SelectOptionData {
         return {
             ...this.data,
@@ -126,6 +155,9 @@ class StringSelectComponent
         return this.data.max_values;
     }
 
+    /**
+     * The options given in the string select menu
+     */
     get Options(): readonly SelectOption[] {
         return this.data.options;
     }
@@ -205,6 +237,11 @@ class StringSelectComponent
         return this.data.options.splice(index, count, ...normalize(parts));
     }
 
+    /**
+     * Replaces options of the current string select menu
+     * @param options The options of the select menu
+     * @returns
+     */
     options(...options: FlattenableArray<SelectOption>) {
         this.data.options = normalizeOptions(options);
         return this;
