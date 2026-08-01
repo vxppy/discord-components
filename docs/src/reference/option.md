@@ -8,6 +8,8 @@ class SelectOption
 
 ## Builder
 
+Creates a SelectOption for StringSelectComponent
+
 <pre class="vxppy-code"><code><span class="line"><span class="keyword">export</span> <span class="keyword">function</span> <span class="method">option</span><span class="punctuation">(</span></span>
 <span class="line">    <span class="parameter">data</span><span class="punctuation">:</span> <span class="class">SelectOptionData</span></span>
 <span class="line"><span class="punctuation">):</span> <span class="class">SelectOption</span></span></code></pre>
